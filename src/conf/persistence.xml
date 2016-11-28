@@ -10,20 +10,20 @@
     <class>entity.ItemDescriptionType</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://50.87.144.43:3306/insider3_insider360?zeroDateTimeBehavior=convertToNull"/>
-      <property name="javax.persistence.jdbc.user" value="insider3_root"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://50.87.144.43:3306/insider3_dev?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="insider3_dev"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="rikofox"/>
+      <property name="javax.persistence.jdbc.password" value="insider360@123"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="insider360PU2" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://50.87.144.43:3306/insider3_insider360?zeroDateTimeBehavior=convertToNull"/>
-      <property name="javax.persistence.jdbc.user" value="insider3_root"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://50.87.144.43:3306/insider3_dev?zeroDateTimeBehavior=convertToNull"/>
+      <property name="javax.persistence.jdbc.user" value="insider3_dev"/>
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="rikofox"/>
+      <property name="javax.persistence.jdbc.password" value="insider360@123"/>
     </properties>
   </persistence-unit>
 </persistence>
