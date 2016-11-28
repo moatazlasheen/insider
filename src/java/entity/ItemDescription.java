@@ -42,6 +42,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ItemDescription.findByGenerId", query = "SELECT i FROM ItemDescription i WHERE i.generId = :generId")})
 public class ItemDescription implements Serializable {
 
+    @Lob
+    @Column(name = "upload")
+    private byte[] upload;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,8 +63,6 @@ public class ItemDescription implements Serializable {
     @Basic(optional = false)
     @Column(name = "unit_id", nullable = false)
     private int unitId;
-    @Lob
-    private byte[] upload;
     @Column(name = "udf_1", length = 50)
     private String udf1;
     @Column(name = "udf_2", length = 50)
@@ -222,5 +224,7 @@ public class ItemDescription implements Serializable {
     public String toString() {
         return "entity.ItemDescription[ itemId=" + itemId + " ]";
     }
+
+   
     
 }
