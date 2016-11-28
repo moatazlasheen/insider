@@ -226,8 +226,9 @@
                                                             <th>Code</th>
                                                             <th>Description</th>
                                                             <th>Item_Type</th>
+                                                            <th>Unit ID</th>
                                                             <th>Upload</th>
-                                                            <th>Gener</th>
+                                                            <th>Genre</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -237,7 +238,8 @@
                                                             <td><input type="text" name="code"  class="form-control" /></td>
                                                             <td><input type="text" name="description"  class="form-control" /></td>
                                                             <td><input type="text" name="item_type"  class="form-control" /></td>
-                                                            <td><input type="file" name="fileUploadField"/>upload</td>
+                                                            <td><input type="text" name="unit_id"  class="form-control" /></td>
+                                                            <td><input type="file" name="fileTOBeUploaded"/>upload</td>
                                                             <td><select name="materials">
                                                                     <option>materials</option>
                                                                 <c:forEach var="material" items="${materials}">

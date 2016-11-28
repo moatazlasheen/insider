@@ -9,7 +9,6 @@ import entity.ItemDescription;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.System.out;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import jpa.ItemDescriptionJpaController;
 import model.cons;
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
@@ -63,11 +63,12 @@ public class itemdescription extends HttpServlet {
             boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
             if (isMultipart) {
-                String id ;
-                String code ;
-                String description;
-                String itemType ;
-                String fileUploadField ;
+                String id = "";
+                String code = "";
+                String description = "";
+                String itemType = "";
+                String fileName = "";
+                String unitId = "";
 
                 //-------------------------------------------------------------------------------------------------------------------------------------
                 // File upload
@@ -76,7 +77,20 @@ public class itemdescription extends HttpServlet {
                     DiskFileItemFactory factory = new DiskFileItemFactory();
                     // Create a new file upload handler
                     ServletFileUpload upload = new ServletFileUpload(factory);
+                    upload.setFileSizeMax(MAX_FILE_SIZE);
 
+                    // sets maximum size of request (include file + form data)
+                    upload.setSizeMax(MAX_REQUEST_SIZE);
+
+                    // constructs the directory path to store upload file
+                    // this path is relative to application's directory
+                    String uploadPath = getServletContext().getRealPath("")
+                            + File.separator + UPLOAD_DIRECTORY;
+                    // creates the directory if it does not exist
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdir();
+                    }
                     // Parse the request
                     List<FileItem> items = upload.parseRequest(request);
                     Iterator<FileItem> iter = items.iterator();
@@ -97,49 +111,41 @@ public class itemdescription extends HttpServlet {
                             } else if (fieldName.equalsIgnoreCase("item_type")) {
                                 itemType = fieldValue;
                                 System.out.println("item_type: " + itemType);
+                            }else if (fieldName.equalsIgnoreCase("unit_id")) {
+                                unitId = fieldValue;
+                                System.out.println("unit_id: " + itemType);
                             }
                         } else // This is a file
                         {
-                            try {
-                                String relativeWebPath = "/";
-                                String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
-                                String absolutePath = absoluteDiskPath + "admin\\productsImages";
-                                String mod = absoluteDiskPath.substring(0, absoluteDiskPath.length() - 10);
-                                productImage = item.getName();
-                                //src\java\com\servlet\admin    web\admin\productsImages
-                                System.out.println("***************Path**************************: " + AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").substring(0, AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").length() - 27) + "/web/admin/productsImages" + item.getName());
-                                item.write(new File(AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").substring(0, AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").length() - 27) + "/web/admin/productsImages", item.getName()));
-                            } catch (Exception ex) {
-                                Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            fileName = item.getName();
 
+                            String filePath = uploadPath + File.separator + fileName;
+                            File storeFile = new File(filePath);
+
+                            // saves the file on disk
+                            item.write(storeFile);
+                            request.setAttribute("message", "Upload has been done successfully!");
+                            out.println("File Name: " + fileName);
                         }
-                        out.println("Product name: " + productName);
+
                     }
-                    // add the product to the database
-//            Products p = new Products((int)serialNumber, productName, productQuantity, productPrice, productBrand, productGender, productImage);
-                    Products product = new Products((int) serialNumber, productName, productQuantity, productPrice, productBrand, productGender, productImage);
-                    boolean isProductAdded = new ProductDAO().addNewProduct(product);
-                    if (isProductAdded) {
-                        out.write("success");
-                        request.setAttribute("addMessage", "success");
-                        try {
-                            response.sendRedirect("/iShop/admin/add_product.jsp?addMessage=success");
-                            //getServletConfig().getServletContext().getRequestDispatcher("/add_product.jsp").forward(request, response);
-                        } catch (IOException ex) {
-                            Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else {
-                        out.write("failure");
-                        try {
-                            response.sendRedirect("/iShop/admin/add_product.jsp?addMessage=failure");
-                            //getServletConfig().getServletContext().getRequestDispatcher("/add_product.jsp").forward(request, response);
-                        } catch (IOException ex) {
-                            Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
+                    // add the item to the database
+                    em.getTransaction().begin();
+                    ItemDescription itemDescription = new ItemDescription();
+
+                    itemDescription.setItemCode(new Integer(code));
+                    itemDescription.setItemDesc(description);
+                    itemDescription.setItemTypeId(new Integer(request.getParameter("item_type_id")));
+                    itemDescription.setUnitId(new Integer(unitId));
+                    itemDescription.setGenerId(new Integer(request.getParameter("gener_id")));
+                    itemDescription.setUpload(request.getParameter("file").getBytes());
+
+                    controller.create(itemDescription);
+                    em.getTransaction().commit();
+                    response.sendRedirect("itemdesc.jsp");
+
                 } catch (FileUploadException ex) {
-                    Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(itemdescription.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 //-------------------------------------------------------------------------------------------------------------------------------------
 
