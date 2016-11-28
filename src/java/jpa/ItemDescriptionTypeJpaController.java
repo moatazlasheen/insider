@@ -134,5 +134,17 @@ public class ItemDescriptionTypeJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<ItemDescriptionType> getAllTypes() {
+
+        EntityManager em = getEntityManager();
+        try {
+            String materialQuery = "FROM ItemDescriptionType i";
+            Query q = em.createQuery(materialQuery);
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }

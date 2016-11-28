@@ -7,6 +7,7 @@ package jpa;
 
 import entity.MaterialType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -122,6 +123,19 @@ public class MaterialTypeJpaController implements Serializable {
         }
     }
 
+    public List<MaterialType> getAllMaterials() {
+
+        EntityManager em = getEntityManager();
+        try {
+            String materialQuery = "FROM MaterialType m";
+            Query q = em.createQuery(materialQuery);
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+
+    }
+
     public int getMaterialTypeCount() {
         EntityManager em = getEntityManager();
         try {
@@ -134,5 +148,5 @@ public class MaterialTypeJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

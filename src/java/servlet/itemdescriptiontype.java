@@ -5,9 +5,14 @@
  */
 package servlet;
 
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+import entity.Gener;
 import entity.ItemDescriptionType;
+import entity.MaterialType;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -17,7 +22,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import jpa.GenerJpaController;
 import jpa.ItemDescriptionTypeJpaController;
+import jpa.MaterialTypeJpaController;
 import model.cons;
 
 /**
@@ -35,7 +42,7 @@ public class itemdescriptiontype extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-     protected void processRequest(HttpServletRequest request, HttpServletResponse response)     throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         EntityManagerFactory emf = null;
@@ -43,37 +50,36 @@ public class itemdescriptiontype extends HttpServlet {
         try {
             emf = Persistence.createEntityManagerFactory(cons.entityName);
             em = emf.createEntityManager();
-            ItemDescriptionTypeJpaController controller=new ItemDescriptionTypeJpaController(emf);
+            ItemDescriptionTypeJpaController controller = new ItemDescriptionTypeJpaController(emf);
 
             if (request.getParameter("save") != null) {
                 em.getTransaction().begin();
-                ItemDescriptionType idt=new  ItemDescriptionType();
+                ItemDescriptionType idt = new ItemDescriptionType();
                 idt.setMaterialCategoryId(new Integer(request.getParameter("material_desc").trim()));
                 idt.setMaterialTypeId(new Integer(request.getParameter("material_desc").trim()));
                 controller.create(idt);
                 em.getTransaction().commit();
                 response.sendRedirect("itemdesctype.jsp");
-            }else if(request.getParameter("update")!=null) {               
+            } else if (request.getParameter("update") != null) {
                 em.getTransaction().begin();
-                ItemDescriptionType idt=new  ItemDescriptionType();
-                idt=controller.findItemDescriptionType(new Integer(request.getParameter("edit_material_id").trim()));
+                ItemDescriptionType idt = new ItemDescriptionType();
+                idt = controller.findItemDescriptionType(new Integer(request.getParameter("edit_material_id").trim()));
                 idt.setMaterialCategoryId(new Integer(request.getParameter("material_desc").trim()));
                 idt.setMaterialTypeId(new Integer(request.getParameter("material_desc").trim()));
                 controller.edit(idt);
                 em.getTransaction().commit();
                 response.sendRedirect("itemdesctype.jsp");
-            }else if(request.getParameter("del_material")!=null) {
-                if (request.getParameter("id_value_del").trim()!=null) {
-                em.getTransaction().begin();
-                controller.destroy(new Integer(request.getParameter("id_value_del").trim()));
-                em.getTransaction().commit();
-                response.sendRedirect("itemdesctype.jsp");
+            } else if (request.getParameter("del_material") != null) {
+                if (request.getParameter("id_value_del").trim() != null) {
+                    em.getTransaction().begin();
+                    controller.destroy(new Integer(request.getParameter("id_value_del").trim()));
+                    em.getTransaction().commit();
+                    response.sendRedirect("itemdesctype.jsp");
                 }
             }
-          
+
 //            request.setAttribute("generlist",findGenerEntities);
 //            request.getRequestDispatcher("/gener.jsp").forward(request, response);
-
         } catch (Exception ex) {
             Logger.getLogger(ItemDescriptionType.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -96,7 +102,7 @@ public class itemdescriptiontype extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        showDropDownLists(request, response);
     }
 
     /**
@@ -123,4 +129,32 @@ public class itemdescriptiontype extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private void showDropDownLists(HttpServletRequest request, HttpServletResponse response) {
+        EntityManager em = null;
+        EntityManagerFactory emf = null;
+        try {
+            emf = Persistence.createEntityManagerFactory(cons.entityName);
+            em = emf.createEntityManager();
+            List<ItemDescriptionType> types = new ItemDescriptionTypeJpaController(emf).getAllTypes();
+            
+            MaterialTypeJpaController materialController = new MaterialTypeJpaController(emf);
+            List<MaterialType> materials = materialController.getAllMaterials();
+            GenerJpaController generContoller = new GenerJpaController(emf);
+            List<Gener> geners = generContoller.getAllGener();
+            request.setAttribute("materials", materials);
+            request.setAttribute("geners", geners);
+
+            request.getRequestDispatcher("itemdesctype.jsp").forward(request, response);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            if (emf != null) {
+                emf.close();
+            }
+
+        }
+    }
 }

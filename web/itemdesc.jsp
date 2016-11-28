@@ -3,6 +3,7 @@
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
     <!-- BEGIN HEAD -->
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <head>
         <meta charset="UTF-8" />
         <title>INSIDER 360</title>
@@ -32,16 +33,26 @@
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
         <SCRIPT language="javascript">
-            function Add(){
-                
-            $("#dataTables tbody").append(
-                    " <tr>"+                    
-                    "<td> <input  type = \"text\" name = \"typeDesc[]\" class = \"form-control\" required = \"\" /> </td>"+
-                    "<td> <input type = \"text\" name = \"typeCat[]\"  class = \"form-control\" /> </td>"+
-                    "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> "+
-                    "</tr>");
+            function Add() {
 
-           };</script>
+                $("#dataTables tbody").append(
+                        " <tr>" +
+                        "<td> <input  type = \"text\" name = \"typeDesc[]\" class = \"form-control\"  readonly= 'true' /> </td>" +
+                        "<td> <input type = \"text\" name = \"typeCat[]\"  class = \"form-control\" /> </td>" +
+                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
+                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
+                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
+                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
+                        "</tr>");
+
+            }
+
+            function save() {
+
+
+
+            }
+        </script>
 
     </head>
 
@@ -188,10 +199,11 @@
                 <!--PAGE CONTENT -->
                 <div id="content">
 
+
                     <div class="inner" style="min-height: 1000px;">
                         <div class="row">
                             <div class="col-lg-12">
-                                <h5>Material Types Setup</h5>
+                                <h5>Item Description</h5>
                             </div>
                         </div>
                         <hr />
@@ -201,7 +213,7 @@
                             <div class="col-lg-12">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        Material Types Setup
+                                        Item Description
                                     </div>
                                     <div class="panel-body">
                                         <div class="table-responsive">
@@ -210,44 +222,54 @@
                                                     <thead>
                                                         <tr>
                                                             <!--<th>Type ID</th>-->
-                                                            <th>Type Description</th>
-                                                            <th>Type Category</th>
-                                                            <th>Type Code</th>
+                                                            <th>ID</th>
+                                                            <th>Code</th>
+                                                            <th>Description</th>
+                                                            <th>Item_Type</th>
+                                                            <th>Upload</th>
+                                                            <th>Gener</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
                                                             <!--<td><label>1</label></td>-->
-                                                            <td><input  type="text" name="typeDesc[]" class="form-control" required="" /></td>
-                                                            <td><input type="text" name="typeCat[]"  class="form-control" /></td>
-                                                            <td><input type="text" name="typeCode[]"  class="form-control" /></td>
-                                                        </tr>
+                                                            <td><input type="text" name="id" class="form-control" readonly="true" /></td>
+                                                            <td><input type="text" name="code"  class="form-control" /></td>
+                                                            <td><input type="text" name="description"  class="form-control" /></td>
+                                                            <td><input type="text" name="item_type"  class="form-control" /></td>
+                                                            <td><input type="file"/>upload</td>
+                                                            <td><select name="materials">
+                                                                    <option>materials</option>
+                                                                <c:forEach var="material" items="${materials}">
+                                                                    <option value="${material.materialTypeId}">${material.itemTypeDesc}</option>
+                                                                </c:forEach>
+                                                            </select></td> 
+                                                    </tr>
 
-                                                    </tbody>
+                                                </tbody>
 
-                                                </table>
-                                                <input class="btn" type="button" name="addRecord" value="Add Record" onclick="Add()"/>   <br />
-
-                                                <input class="btn" type="submit" name="submit" value="SAVE"/>
-                                                <input class="btn" type="reset" name="submit" value="RESET"/>
-                                            </form>
-                                        </div>
+                                            </table>
+                                            <input class="btn btn-primary" type="button" name="addRecord" value="Save" onclick="Add()"/> 
+                                            <input class="btn btn-warning" type="submit" name="submit" value="edit" onclick="save()"/>
+                                            <input class="btn btn-danger    " type="reset" name="submit" value="reset"/>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
                 </div>
-                <!--END PAGE CONTENT -->
 
             </div>
+            <!--END PAGE CONTENT -->
 
-            <!--END MAIN WRAPPER -->
+        </div>
 
-            <!-- FOOTER -->
-            <div id="footer">
+        <!--END MAIN WRAPPER -->
+
+        <!-- FOOTER -->
+        <div id="footer">
             <%@include  file="footer.jsp"%>        
         </div>
         <!--END FOOTER -->
@@ -273,9 +295,9 @@
         <script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
         <script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
         <script>
-                                                    $(document).ready(function () {
+                                                $(document).ready(function () {
                                                     $('#dataTables-example').dataTable();
-                                                    });
+                                                });
         </script>
 
     </body>

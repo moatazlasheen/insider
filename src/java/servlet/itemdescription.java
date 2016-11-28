@@ -5,9 +5,12 @@
  */
 package servlet;
 
+import entity.Gener;
 import entity.ItemDescription;
+import entity.MaterialType;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -17,7 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import jpa.GenerJpaController;
 import jpa.ItemDescriptionJpaController;
+import jpa.MaterialTypeJpaController;
 import model.cons;
 
 /**
@@ -35,7 +40,7 @@ public class itemdescription extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-     protected void processRequest(HttpServletRequest request, HttpServletResponse response)     throws ServletException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         EntityManagerFactory emf = null;
@@ -43,49 +48,48 @@ public class itemdescription extends HttpServlet {
         try {
             emf = Persistence.createEntityManagerFactory(cons.entityName);
             em = emf.createEntityManager();
-            ItemDescriptionJpaController controller=new ItemDescriptionJpaController(emf);
+            ItemDescriptionJpaController controller = new ItemDescriptionJpaController(emf);
 
             if (request.getParameter("save") != null) {
                 em.getTransaction().begin();
-                ItemDescription id=new ItemDescription();
-                
+                ItemDescription id = new ItemDescription();
+
                 id.setItemCode(new Integer(request.getParameter("item_code")));
                 id.setItemDesc(request.getParameter("item_desc"));
                 id.setItemTypeId(new Integer(request.getParameter("item_type_id")));
                 id.setUnitId(new Integer(request.getParameter("unit_id")));
                 id.setGenerId(new Integer(request.getParameter("gener_id")));
                 id.setUpload(request.getParameter("file").getBytes());
-                
+
                 controller.create(id);
                 em.getTransaction().commit();
                 response.sendRedirect("itemdesc.jsp");
-            }else if(request.getParameter("update")!=null) {               
+            } else if (request.getParameter("update") != null) {
                 em.getTransaction().begin();
-                ItemDescription id=new ItemDescription();
-                id=controller.findItemDescription(new Integer(request.getParameter("edit_material_id").trim()));
-                
+                ItemDescription id = new ItemDescription();
+                id = controller.findItemDescription(new Integer(request.getParameter("edit_material_id").trim()));
+
                 id.setItemCode(new Integer(request.getParameter("item_code")));
                 id.setItemDesc(request.getParameter("item_desc"));
                 id.setItemTypeId(new Integer(request.getParameter("item_type_id")));
                 id.setUnitId(new Integer(request.getParameter("unit_id")));
                 id.setGenerId(new Integer(request.getParameter("gener_id")));
                 id.setUpload(request.getParameter("file").getBytes());
-                
+
                 controller.edit(id);
                 em.getTransaction().commit();
                 response.sendRedirect("itemdesc.jsp");
-            }else if(request.getParameter("del_item")!=null) {
-                if (request.getParameter("id_value_del").trim()!=null) {
-                em.getTransaction().begin();
-                controller.destroy(new Integer(request.getParameter("id_value_del").trim()));
-                em.getTransaction().commit();
-                response.sendRedirect("itemdesc.jsp");
+            } else if (request.getParameter("del_item") != null) {
+                if (request.getParameter("id_value_del").trim() != null) {
+                    em.getTransaction().begin();
+                    controller.destroy(new Integer(request.getParameter("id_value_del").trim()));
+                    em.getTransaction().commit();
+                    response.sendRedirect("itemdesc.jsp");
                 }
             }
-          
+
 //            request.setAttribute("generlist",findGenerEntities);
 //            request.getRequestDispatcher("/gener.jsp").forward(request, response);
-
         } catch (Exception ex) {
             Logger.getLogger(itemdescription.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -134,5 +138,7 @@ public class itemdescription extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    
 
 }

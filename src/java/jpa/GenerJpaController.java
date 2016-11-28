@@ -7,6 +7,7 @@ package jpa;
 
 import entity.Gener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -122,6 +123,17 @@ public class GenerJpaController implements Serializable {
         }
     }
 
+    public List<Gener> getAllGener() {
+        EntityManager em = getEntityManager();
+        try {
+            String materialQuery = "FROM Gener g";
+            Query q = em.createQuery(materialQuery);
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public int getGenerCount() {
         EntityManager em = getEntityManager();
         try {
@@ -134,5 +146,5 @@ public class GenerJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }
