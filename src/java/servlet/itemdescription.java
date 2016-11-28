@@ -50,7 +50,7 @@ public class itemdescription extends HttpServlet {
         final int MAX_FILE_SIZE = 1024 * 1024 * 40; // 40MB
         final int MAX_REQUEST_SIZE = 1024 * 1024 * 50; // 50MB
         //----------------------------------------------------------------------
-        response.setContentType("text/html;charset=UTF-8");
+        //response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         EntityManagerFactory emf = null;
         EntityManager em = null;
@@ -69,6 +69,7 @@ public class itemdescription extends HttpServlet {
                 String itemType = "";
                 String fileName = "";
                 String unitId = "";
+                String generId = "";
 
                 //-------------------------------------------------------------------------------------------------------------------------------------
                 // File upload
@@ -84,8 +85,9 @@ public class itemdescription extends HttpServlet {
 
                     // constructs the directory path to store upload file
                     // this path is relative to application's directory
-                    String uploadPath = getServletContext().getRealPath("")
-                            + File.separator + UPLOAD_DIRECTORY;
+//                    String uploadPath = getServletContext().getRealPath("")
+//                            + File.separator + UPLOAD_DIRECTORY;
+                    String uploadPath = "F:\\insideUpload";
                     // creates the directory if it does not exist
                     File uploadDir = new File(uploadPath);
                     if (!uploadDir.exists()) {
@@ -111,9 +113,13 @@ public class itemdescription extends HttpServlet {
                             } else if (fieldName.equalsIgnoreCase("item_type")) {
                                 itemType = fieldValue;
                                 System.out.println("item_type: " + itemType);
-                            }else if (fieldName.equalsIgnoreCase("unit_id")) {
+                            } else if (fieldName.equalsIgnoreCase("unit_id")) {
                                 unitId = fieldValue;
                                 System.out.println("unit_id: " + itemType);
+                            }
+                            if (fieldName.equalsIgnoreCase("gener_id")) {
+                                generId = fieldValue;
+                                System.out.println("Genre: " + generId);
                             }
                         } else // This is a file
                         {
@@ -135,11 +141,11 @@ public class itemdescription extends HttpServlet {
 
                     itemDescription.setItemCode(new Integer(code));
                     itemDescription.setItemDesc(description);
-                    itemDescription.setItemTypeId(new Integer(request.getParameter("item_type_id")));
+                    itemDescription.setItemTypeId(new Integer(itemType));
                     itemDescription.setUnitId(new Integer(unitId));
-                    itemDescription.setGenerId(new Integer(request.getParameter("gener_id")));
-                    itemDescription.setUpload(request.getParameter("file").getBytes());
-
+                    itemDescription.setGenerId(new Integer(generId));
+//                    itemDescription.setUpload(request.getParameter("file").getBytes());
+                    itemDescription.setUploadFileName(fileName);
                     controller.create(itemDescription);
                     em.getTransaction().commit();
                     response.sendRedirect("itemdesc.jsp");
