@@ -46,7 +46,7 @@
 
 
             function add() {
-                $('#dataTables > tbody > tr.odd').before('<tr><td>here</td><td>here</td></tr>');
+                $('#dataTables > tbody > tr:first').before('<tr><td>Stuff</td><td>Here</td></tr>');
             }
 
             function edit() {
@@ -62,7 +62,17 @@
 
             function getAllMaterialsByCat() {
                 var cat = $("#cat option:selected").val();
-//                /materialajax
+
+                $.ajax({
+                    url: 'materialajax',
+                    data: {
+                        catID: cat
+                    },
+                    success: function (data) {
+                        alert(data)
+                    }
+                });
+
                 $("#materials").removeAttr('disabled');
                 return false;
             }

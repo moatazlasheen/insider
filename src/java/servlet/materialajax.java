@@ -8,6 +8,7 @@
  */
 package servlet;
 
+import com.google.gson.Gson;
 import entity.MaterialType;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -41,6 +42,9 @@ public class materialajax extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        EntityManager em = null;
+        EntityManagerFactory emf = null;
+
         String catStr = request.getParameter("catID");
         if (catStr == null) {
             response.getWriter().write("none");
@@ -48,16 +52,24 @@ public class materialajax extends HttpServlet {
             try {
 
                 Integer catID = Integer.parseInt(catStr);
-                EntityManager em = null;
-                EntityManagerFactory emf = null;
 
                 emf = Persistence.createEntityManagerFactory(cons.entityName);
                 em = emf.createEntityManager();
                 List<MaterialType> materials = new MaterialCategourtJpaController(emf).getAllMaterialsByCat(catID);
-                
+                Gson gson = new Gson();
+                String json = gson.toJson(materials);
+                response.getWriter().write(json);
 
             } catch (Exception e) {
                 System.err.println(e.getMessage());
+            } finally {
+                if (em != null) {
+                    em.close();
+                }
+                if (emf != null) {
+                    emf.close();
+                }
+
             }
         }
     }
