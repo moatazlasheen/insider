@@ -6,6 +6,7 @@
 package jpa;
 
 import entity.MaterialCategourt;
+import entity.MaterialType;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -134,5 +135,21 @@ public class MaterialCategourtJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public List<MaterialType> getAllMaterialsByCat(Integer catID) {
+        EntityManager em = getEntityManager();
+        try {
+            String sql = "FROM MaterialCategourt m";
+            em.createQuery(sql);
+            Query query = em.createQuery(sql);
+            List materialIDs = query.getResultList();
+            sql = "FROM MaterialType m WHERE m.materialTypeId in(" + materialIDs
+                    + ")";
+            query = em.createQuery(sql);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
 }

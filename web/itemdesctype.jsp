@@ -32,24 +32,41 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-        <SCRIPT language="javascript">
-            $("#dataTables tbody").append(
-                    " <tr>" +
-                    "<td> <input  type = \"text\" name = \"typeDesc[]\" class = \"form-control\"  readonly= 'true' /> </td>" +
-                    "<td> <input type = \"text\" name = \"typeCat[]\"  class = \"form-control\" /> </td>" +
-                    "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-                    "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-                    "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-                    "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-                    "</tr>");
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
+        <script>
+//            $(document).ready(function () {
+//                $("#dataTables tbody").append(
+//                        " <tr>" +
+//                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
+//                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
+//                        "</tr>");
+//
+//            });
+
+
+            function add() {
+                $('#dataTables > tbody > tr.odd').before('<tr><td>here</td><td>here</td></tr>');
             }
 
+            function edit() {
+
+
+            }
             function save() {
 
 
 
-            }</script>
+            }
+
+
+            function getAllMaterialsByCat() {
+                var cat = $("#cat option:selected").val();
+//                /materialajax
+                $("#materials").removeAttr('disabled');
+                return false;
+            }
+        </script>
 
     </head>
 
@@ -217,37 +234,34 @@
                                                 <table class="table table-striped table-bordered table-hover" id="dataTables">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
-                                                            <th>Material</th>
                                                             <th>Category</th>
+                                                            <th>Material</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-
-                                                            <td><input type="text" name="id" readonly="true" /></td>
-
-                                                            <td><select name="materials">
-                                                                    <option>materials</option>
-                                                                <c:forEach var="material" items="${requestScope.materials}">
-                                                                    <option value="${material.materialTypeId}">${material.itemTypeDesc}</option>
-                                                                </c:forEach>
-                                                            </select></td> 
-
-                                                        <td><select name="geners">
-                                                                <option>category</option>
+                                                        <tr id="lstTR">
+                                                            <td><select id="cat"  onchange="getAllMaterialsByCat()">
+                                                                    <option>category</option>
                                                                 <c:forEach var="gener" items="${requestScope.geners}">
                                                                     <option value="${gener.generId}">${gener.generCode}</option>
                                                                 </c:forEach>
                                                             </select></td> 
+
+                                                        <td><select id="materials" disabled>
+                                                                <option>materials</option>
+                                                            </select></td> 
+
+
                                                     </tr>
 
                                                 </tbody>
 
                                             </table>
-                                            <input class="btn btn-primary" type="button" name="addRecord" value="add" onclick="Add()"/> 
-                                            <input class="btn btn-warning" type="submit" name="submit" value="submit" onclick="save()"/>
-                                            <input class="btn btn-danger" type="reset" name="reset" value="reset"/>
+                                            <input class="btn btn-primary" type="button" name="addBtn" value="add" onclick="add()"/> 
+                                            <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> 
+                                            <input class="btn btn-success" type="submit" name="submit" value="save" onclick="save()"/>
+                                            <input class="btn btn-danger" type="button" name="editBtn" value="delete" onclick="deleteItem()"/> 
+                                            <input class="btn btn-warning" type="reset" name="reset" value="reset"/>
                                         </form>
                                     </div>
                                 </div>
