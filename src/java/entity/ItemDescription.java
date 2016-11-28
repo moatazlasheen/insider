@@ -74,6 +74,8 @@ public class ItemDescription implements Serializable {
     @Basic(optional = false)
     @Column(name = "gener_id", nullable = false)
     private int generId;
+    @Column(name = "upload_file_name", length = 250)
+    private String uploadFileName;
 
     public ItemDescription() {
     }
@@ -185,6 +187,16 @@ public class ItemDescription implements Serializable {
     public void setGenerId(int generId) {
         this.generId = generId;
     }
+
+    public String getUploadFileName() {
+        return uploadFileName;
+    }
+
+    public void setUploadFileName(String uploadFileName) {
+        this.uploadFileName = uploadFileName;
+    }
+    
+    
 
     @Override
     public int hashCode() {

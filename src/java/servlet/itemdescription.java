@@ -5,11 +5,12 @@
  */
 package servlet;
 
-import entity.Gener;
 import entity.ItemDescription;
-import entity.MaterialType;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.System.out;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,10 +21,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import jpa.GenerJpaController;
 import jpa.ItemDescriptionJpaController;
-import jpa.MaterialTypeJpaController;
 import model.cons;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 /**
  *
@@ -41,16 +43,107 @@ public class itemdescription extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // location to store file uploaded
+        final String UPLOAD_DIRECTORY = "upload";
+        // upload settings
+        final int MEMORY_THRESHOLD = 1024 * 1024 * 3;  // 3MB
+        final int MAX_FILE_SIZE = 1024 * 1024 * 40; // 40MB
+        final int MAX_REQUEST_SIZE = 1024 * 1024 * 50; // 50MB
+        //----------------------------------------------------------------------
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         EntityManagerFactory emf = null;
         EntityManager em = null;
         try {
+
             emf = Persistence.createEntityManagerFactory(cons.entityName);
             em = emf.createEntityManager();
             ItemDescriptionJpaController controller = new ItemDescriptionJpaController(emf);
 
-            if (request.getParameter("save") != null) {
+            boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+
+            if (isMultipart) {
+                String id ;
+                String code ;
+                String description;
+                String itemType ;
+                String fileUploadField ;
+
+                //-------------------------------------------------------------------------------------------------------------------------------------
+                // File upload
+                try {
+                    // Create a factory for disk-based file items
+                    DiskFileItemFactory factory = new DiskFileItemFactory();
+                    // Create a new file upload handler
+                    ServletFileUpload upload = new ServletFileUpload(factory);
+
+                    // Parse the request
+                    List<FileItem> items = upload.parseRequest(request);
+                    Iterator<FileItem> iter = items.iterator();
+                    while (iter.hasNext()) {
+                        FileItem item = iter.next();
+                        if (item.isFormField()) { //These are form fields
+                            String fieldName = item.getFieldName();
+                            String fieldValue = item.getString();
+                            if (fieldName.equalsIgnoreCase("id")) {
+                                id = request.getParameter("id");
+                                System.out.println("id " + id);
+                            } else if (fieldName.equalsIgnoreCase("code")) {
+                                code = fieldValue;
+                                System.out.println("code " + code);
+                            } else if (fieldName.equalsIgnoreCase("description")) {
+                                description = fieldValue;
+                                System.out.println("description: " + description);
+                            } else if (fieldName.equalsIgnoreCase("item_type")) {
+                                itemType = fieldValue;
+                                System.out.println("item_type: " + itemType);
+                            }
+                        } else // This is a file
+                        {
+                            try {
+                                String relativeWebPath = "/";
+                                String absoluteDiskPath = getServletContext().getRealPath(relativeWebPath);
+                                String absolutePath = absoluteDiskPath + "admin\\productsImages";
+                                String mod = absoluteDiskPath.substring(0, absoluteDiskPath.length() - 10);
+                                productImage = item.getName();
+                                //src\java\com\servlet\admin    web\admin\productsImages
+                                System.out.println("***************Path**************************: " + AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").substring(0, AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").length() - 27) + "/web/admin/productsImages" + item.getName());
+                                item.write(new File(AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").substring(0, AdminAddProduct.class.getClassLoader().getResource("").getPath().replace("%20", " ").length() - 27) + "/web/admin/productsImages", item.getName()));
+                            } catch (Exception ex) {
+                                Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                        }
+                        out.println("Product name: " + productName);
+                    }
+                    // add the product to the database
+//            Products p = new Products((int)serialNumber, productName, productQuantity, productPrice, productBrand, productGender, productImage);
+                    Products product = new Products((int) serialNumber, productName, productQuantity, productPrice, productBrand, productGender, productImage);
+                    boolean isProductAdded = new ProductDAO().addNewProduct(product);
+                    if (isProductAdded) {
+                        out.write("success");
+                        request.setAttribute("addMessage", "success");
+                        try {
+                            response.sendRedirect("/iShop/admin/add_product.jsp?addMessage=success");
+                            //getServletConfig().getServletContext().getRequestDispatcher("/add_product.jsp").forward(request, response);
+                        } catch (IOException ex) {
+                            Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    } else {
+                        out.write("failure");
+                        try {
+                            response.sendRedirect("/iShop/admin/add_product.jsp?addMessage=failure");
+                            //getServletConfig().getServletContext().getRequestDispatcher("/add_product.jsp").forward(request, response);
+                        } catch (IOException ex) {
+                            Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                } catch (FileUploadException ex) {
+                    Logger.getLogger(AdminAddProduct.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //-------------------------------------------------------------------------------------------------------------------------------------
+
+            } else if (request.getParameter("save") != null) {
                 em.getTransaction().begin();
                 ItemDescription id = new ItemDescription();
 
@@ -100,7 +193,7 @@ public class itemdescription extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -138,7 +231,5 @@ public class itemdescription extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    
 
 }
