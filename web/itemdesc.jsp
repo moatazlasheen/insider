@@ -217,7 +217,7 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="table-responsive">
-                                            <form method="POST" action="#">
+                                            <form method="POST" action="itemdescription"  enctype="multipart/form-data">
                                                 <table class="table table-striped table-bordered table-hover" id="dataTables">
                                                     <thead>
                                                         <tr>
@@ -237,18 +237,20 @@
                                                             <td><input type="text" name="code"  class="form-control" /></td>
                                                             <td><input type="text" name="description"  class="form-control" /></td>
                                                             <td><input type="text" name="item_type"  class="form-control" /></td>
-                                                            <td><input type="file"/>upload</td>
+                                                            <td><input type="file" name="fileUploadField"/>upload</td>
                                                             <td><select name="materials">
                                                                     <option>materials</option>
                                                                 <c:forEach var="material" items="${materials}">
                                                                     <option value="${material.materialTypeId}">${material.itemTypeDesc}</option>
                                                                 </c:forEach>
                                                             </select></td> 
+
                                                     </tr>
 
                                                 </tbody>
 
                                             </table>
+                                                <input type="hidden" name="fileUploadForm" value="true"/>
                                             <input class="btn btn-primary" type="button" name="addRecord" value="Save" onclick="Add()"/> 
                                             <input class="btn btn-warning" type="submit" name="submit" value="edit" onclick="save()"/>
                                             <input class="btn btn-danger    " type="reset" name="submit" value="reset"/>
