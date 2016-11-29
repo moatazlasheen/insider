@@ -1,5 +1,6 @@
-<%@page import="inquiry.getUnit"%>
+    <%@page import="inquiry.getUnit"%>
 <%@page import="entity.MaterialType"%>
+<%@page import="entity.MaterialCategourt"%>
 <%@page import="java.util.List"%>
 ﻿<!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
@@ -34,6 +35,15 @@
         <link rel="stylesheet" href="assets/css/theme.css" />
         <link rel="stylesheet" href="assets/css/MoneAdmin.css" />
         <link rel="stylesheet" href="assets/plugins/Font-Awesome/css/font-awesome.css" />
+        
+        
+        
+
+        
+        
+        
+    
+
         <!-- END PAGE LEVEL  STYLES -->
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -50,28 +60,46 @@
                 self.close();
             }
 
-           function ram() {
-            $(".use-address").click(function () {
-                var $row = $(this).closest("tr");    // Find the row
+           function ram(clickedButton) {
+                var $row = $(clickedButton).closest("tr");    // Find the row
                 var $text = $row.find(".descc").text(); // Find the text
                 var $text1 = $row.find(".idd").text(); // Find the text
+                var $text2 = $row.find(".materialCategory").text().trim(); // Find the text
+                //alert("$text2 : " + $text2);
 
                 // Let's test it out
                 document.getElementById("editevalue").value=$text;
                 document.getElementById("edit_unit_id").value=$text1;
-            });
+                document.getElementById("materialTypeCat").value=$text2;
              
              }
              
-               function ram2() {
-            $(".use-address").click(function () {
-                var $row = $(this).closest("tr");    // Find the row
+               function ram2(clickedButton) {
+                var $row = $(clickedButton).closest("tr");    // Find the row
                 var $text1 = $row.find(".idd").text(); // Find the text
 
                 // Let's test it out
                 document.getElementById("id_value_del").value=$text1;
-            });
+             }
              
+             function checkMaterialExistance(fieldName) {
+                 //alert("fieldName : " + fieldName);
+                 var exists = false;
+                 var materialTypeVar = $("input[name=" + fieldName + "]").val();
+                 //alert("materialTypeVar : " + materialTypeVar );
+                 jQuery.ajax({
+                    url: 'ajax/materialTypeExist.jsp?materialTypeDesc='+materialTypeVar,
+                    success: function (result) {
+                        //alert(result.trim());
+                        if( 'true' == result.trim()){
+                            alert(materialTypeVar + " already exists ");
+                        }else if( 'false' == result.trim()){
+                            exists = true;
+                        } 
+                    },
+                    async: false
+                });
+                 return exists;
              }
         </script>
 
@@ -242,6 +270,7 @@
                                                     <tr>
                                                         <th style="display: none;">Type ID</th>
                                                         <th>Material Type Description</th>
+                                                        <th>Material Category</th>
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -255,9 +284,17 @@
                                                     %>
                                                     <td class="idd" style="display: none;"><%=rr.get(i).getMaterialTypeId() %> </td>
                                                     <td class="descc"><%=rr.get(i).getItemTypeDesc() %></td>                                                
+                                                    <td class="materialCategory" id="materialCategory">
+                                                        <% 
+                                                            MaterialCategourt materialCategory = rr.get(i).getMaterialCategory();
+                                                            if ( materialCategory != null ) {
+                                                                out.print(materialCategory.getMaterialCategouryDesc());
+                                                            }
+                                                         %>
+                                                    </td>                                                
                                                     <td>
-                                                        <button type="button" class="btn btn-default btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal2"  data-toggle="modal"  aria-hidden="true"  onclick="ram()">EDIT</button>
-                                                        <button type="button" class="btn btn-danger btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal"  data-toggle="modal"  aria-hidden="true" onclick="ram2()">DEL</button>
+                                                        <button type="button" class="btn btn-default btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal2"  data-toggle="modal"  aria-hidden="true"  onclick="ram(this)">EDIT</button>
+                                                        <button type="button" class="btn btn-danger btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal"  data-toggle="modal"  aria-hidden="true" onclick="ram2(this)">DEL</button>
 
                                                     </td>
                                                 </tr>
@@ -322,10 +359,22 @@
                         </div>
                         <form role="form" method="POST" action="materialtype">
                         <div class="modal-body">
-                            <input autofocus=""  type="text" class="form-control" name="editevalue" placeholder="enter your Material Type"  id="editevalue" required="" />
+                            <input autofocus=""  type="text" class="form-control" name="editevalue" placeholder="enter your Material Type"  id="editevalue" required />
                             <input type="hidden" name="edit_material_id" id="edit_unit_id"  />
                         </div>
-                        <div class="modal-footer">
+                        <div>
+                            <select class="form-control" name="materialTypeCat" id="materialTypeCat">
+                                <option value="">-</option>
+                                <%
+                                    getUnit getUnit1 = new getUnit();
+                                    List<MaterialCategourt> list1 = getUnit1.getMaterialCat();
+                                    for ( MaterialCategourt matCat : list1 ) {
+                                        out.println("<option value='" + matCat.getMaterialCategouryDesc()+ "'>" + matCat.getMaterialCategouryDesc() + "</option>"); 
+                                    }                        
+                                %>
+                            </select>
+                        </div>
+                            <div class="modal-footer">
                             <button type="submit" class="btn btn-default"  name="update" value="update">Update</button>
                         </div>
                         </form>
@@ -343,11 +392,22 @@
                             <h4 class="modal-title" id="H2">Material Type Form</h4>
                         </div>
                         <div class="modal-body">
-                            <form role="form" action="materialtype" method="POST">
+                            <form role="form" action="materialtype" method="POST" onsubmit="return checkMaterialExistance('material_desc')">
                                 <div class="form-group">
                                     <label>Material Type</label>
                                     <input clas="form-control" type="text" name="material_desc" placeholder="enter Material Type" required=""/>
-                                </div>                                      
+                                </div>
+                                <div class="form-group">
+                                    <label>Material Type Category</label>
+                                    <select class="form-control" name="materialTypeCat2" id="materialTypeCat2">
+                                        <option value="">-</option>
+                                        <%
+                                            for ( MaterialCategourt matCat : list1 ) {
+                                                out.println("<option value='" + matCat.getMaterialCategouryDesc()+ "'>" + matCat.getMaterialCategouryDesc() + "</option>"); 
+                                            }                        
+                                        %>
+                                    </select>
+                                </div>
                                 <div class="modal-footer">
                                     <button type="submit" name="save" value="save" class="btn btn-primary">Save changes</button>
                                 </div>
@@ -392,9 +452,25 @@
         <!-- PAGE LEVEL SCRIPTS -->
         <script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
         <script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+        
+        <script src="https://code.jquery.com/jquery-1.12.3.js"></script>
+        <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+        <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+        <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
         <script>
             $(document).ready(function () {
-                $('#dataTables-example').dataTable();
+                $('#dataTables-example').DataTable( {
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'excel', 'pdf'
+                    ]
+                } );
+                //$('#dataTables-example').dataTable();
             });
         </script>
     </body>
