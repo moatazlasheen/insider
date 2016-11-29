@@ -16,7 +16,6 @@ import javax.persistence.Persistence;
 import dump.jpa.GenerJpaController;
 import dump.jpa.ItemDescriptionJpaController;
 import dump.jpa.ItemDescriptionTypeJpaController;
-import dump.jpa.MaterialCategourtJpaController;
 import dump.jpa.MaterialTypeJpaController;
 import dump.jpa.UnitsJpaController;
 import model.cons;
@@ -39,13 +38,6 @@ public class getUnit {
         GenerJpaController controller = new GenerJpaController(emf);
         List<Gener> findGenerEntities = controller.findGenerEntities();
         return findGenerEntities;
-    }
-
-    public List<MaterialCategourt> getMaterialCat() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
-        MaterialCategourtJpaController controller = new MaterialCategourtJpaController(emf);
-        List<MaterialCategourt> findUnitsEntities = controller.findMaterialCategourtEntities();
-        return findUnitsEntities;
     }
 
     public List<MaterialType> getmaterialType() {

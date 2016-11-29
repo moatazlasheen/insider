@@ -6,11 +6,11 @@ GPL * modify it under the terms of the GNU General Public License
 GPL * as published by the Free Software Foundation; either version 2
 GPL * of the License, or (at your option) any later version.
  */
-
 package jpa;
 
 import entity.GenerMaterials;
 import entity.GenerMaterialsPK;
+import entity.MaterialType;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -143,6 +143,27 @@ public class GenerMaterialsJpaController implements Serializable {
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<MaterialType> getAllMaterialsByCat(Integer catID) {
+        EntityManager em = getEntityManager();
+        try {
+            String sql = "FROM MaterialCategourt m WHERE m.materailCategouryId=" + catID;
+            em.createQuery(sql);
+            Query query = em.createQuery(sql);
+            List<MaterialType> materialIDs = query.getResultList();
+            StringBuilder strBuilder = new StringBuilder();
+            for (int i = 0; i < materialIDs.size(); i++) {
+                strBuilder.append(materialIDs.get(i).getMaterialTypeId() + ",");
+            }
+            String strings = strBuilder.toString();
+            sql = "FROM MaterialType m WHERE m.materialTypeId in("
+                    + strings.substring(0, strings.length() - 1) + ")";
+            query = em.createQuery(sql);
+            return query.getResultList();
         } finally {
             em.close();
         }

@@ -21,7 +21,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import dump.jpa.MaterialCategourtJpaController;
+import jpa.GenerMaterialsJpaController;
 import model.cons;
 
 /**
@@ -55,7 +55,7 @@ public class materialajax extends HttpServlet {
 
                 emf = Persistence.createEntityManagerFactory(cons.entityName);
                 em = emf.createEntityManager();
-                List<MaterialType> materials = new MaterialCategourtJpaController(emf).getAllMaterialsByCat(catID);
+                List<MaterialType> materials = new GenerMaterialsJpaController(emf).getAllMaterialsByCat(catID);
                 Gson gson = new Gson();
                 String json = gson.toJson(materials);
                 System.out.println(json);

@@ -16,13 +16,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `GENER`
+-- Table structure for table `gener`
 --
 
-DROP TABLE IF EXISTS `GENER`;
+DROP TABLE IF EXISTS `gener`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `GENER` (
+CREATE TABLE `gener` (
   `gener_id` int(8) NOT NULL AUTO_INCREMENT,
   `gener_code` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `gener_desc` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -32,38 +32,13 @@ CREATE TABLE `GENER` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `GENER`
+-- Dumping data for table `gener`
 --
 
-LOCK TABLES `GENER` WRITE;
-/*!40000 ALTER TABLE `GENER` DISABLE KEYS */;
-INSERT INTO `GENER` VALUES (3,'GE01','FIXED ASSET'),(4,'GE02','CURRENT ASSET');
-/*!40000 ALTER TABLE `GENER` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `UNITS`
---
-
-DROP TABLE IF EXISTS `UNITS`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `UNITS` (
-  `unit_id` int(8) NOT NULL AUTO_INCREMENT,
-  `unit_desc` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`unit_id`),
-  UNIQUE KEY `unit_id` (`unit_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `UNITS`
---
-
-LOCK TABLES `UNITS` WRITE;
-/*!40000 ALTER TABLE `UNITS` DISABLE KEYS */;
-INSERT INTO `UNITS` VALUES (6,'PCS'),(7,'BAG'),(8,'SQUARE METER / M2'),(9,'CUBIC METER / M3'),(10,'LINEAR METER / LM'),(11,'BOX'),(12,'PACK'),(13,'CARTON / CRTN'),(14,'CM'),(15,'CM2'),(16,'CM3'),(17,'KG'),(18,'GRAM'),(19,'TON'),(20,'PAIL'),(21,'BUCKET'),(22,'SHEET'),(23,'ROLL'),(24,'TIME'),(25,'CAN'),(26,'DRUM'),(27,'FEET'),(28,'INCH'),(29,'GALLON'),(30,'LITER'),(31,'PAIR'),(32,'POUND'),(33,'SET'),(34,'ONE UNIT'),(35,'TRUCK'),(36,'TUBE'),(37,'YARD'),(38,'MILE'),(39,'KM'),(41,'MM'),(42,'OZ'),(43,'SEC'),(44,'PART'),(45,'CUBIC INCH'),(46,'CUBIC FEET'),(47,'HOUR'),(48,'DAY'),(49,'MONTH'),(50,'YEAR'),(51,'BOTTLE'),(52,'JAR'),(53,'BAR');
-/*!40000 ALTER TABLE `UNITS` ENABLE KEYS */;
+LOCK TABLES `gener` WRITE;
+/*!40000 ALTER TABLE `gener` DISABLE KEYS */;
+INSERT INTO `gener` VALUES (3,'GE01','FIXED ASSET'),(4,'GE02','CURRENT ASSET');
+/*!40000 ALTER TABLE `gener` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -76,6 +51,7 @@ DROP TABLE IF EXISTS `gener_materials`;
 CREATE TABLE `gener_materials` (
   `gener_id` int(11) NOT NULL DEFAULT '0',
   `material_id` int(11) NOT NULL DEFAULT '0',
+  `description` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`gener_id`,`material_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -151,30 +127,6 @@ INSERT INTO `item_description_type` VALUES (1,3,0);
 UNLOCK TABLES;
 
 --
--- Table structure for table `material_categourt`
---
-
-DROP TABLE IF EXISTS `material_categourt`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `material_categourt` (
-  `materail_categoury_id` int(8) NOT NULL AUTO_INCREMENT,
-  `material_Categoury_Desc` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`materail_categoury_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `material_categourt`
---
-
-LOCK TABLES `material_categourt` WRITE;
-/*!40000 ALTER TABLE `material_categourt` DISABLE KEYS */;
-INSERT INTO `material_categourt` VALUES (2,'Architectural Work'),(3,'Civil Work'),(4,'Structural Work'),(5,'Electrical Work'),(6,'Mechanical Work'),(7,'Electromechanical Work'),(8,'Interior Design'),(9,'Internal Finishing'),(10,'External Finishing'),(11,'Wood Work'),(12,'Gypsum Work'),(13,'Metal Work'),(14,'Drapery Work'),(15,'Furniture Work'),(16,'Heavy Equipment'),(17,'Light Equipment'),(18,'Tools');
-/*!40000 ALTER TABLE `material_categourt` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `material_type`
 --
 
@@ -197,6 +149,31 @@ LOCK TABLES `material_type` WRITE;
 INSERT INTO `material_type` VALUES (2,'BRICK WORK'),(3,'GYPSUM BOARD - WALL BOARD'),(4,'GYPSUM BOARD - CEILING BOARD'),(5,'GYPSUM BOARD - CEILING METAL FRAMING SYSTEM'),(6,'GYPSUM BOARD - WALL METAL FRAMING SYSTEM'),(7,'INTERNAL NORMAL PAINT'),(8,'EXTERNAL NORMAL PAINT'),(9,'INTERNAL EPOXY PAINT'),(10,'EXTERNAL EPOXY PAINT'),(11,'CONCRETE REPAIR'),(12,'CONCRETE ENHANCEMENT'),(13,'ELECTRICAL CABLES'),(14,'BLACK CEMENT'),(15,'WHITE CEMENT'),(16,'CEMENT BOARD'),(17,'MARBLE'),(18,'GRANITE');
 /*!40000 ALTER TABLE `material_type` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `units`
+--
+
+DROP TABLE IF EXISTS `units`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `units` (
+  `unit_id` int(8) NOT NULL AUTO_INCREMENT,
+  `unit_desc` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`unit_id`),
+  UNIQUE KEY `unit_id` (`unit_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `units`
+--
+
+LOCK TABLES `units` WRITE;
+/*!40000 ALTER TABLE `units` DISABLE KEYS */;
+INSERT INTO `units` VALUES (6,'PCS'),(7,'BAG'),(8,'SQUARE METER / M2'),(9,'CUBIC METER / M3'),(10,'LINEAR METER / LM'),(11,'BOX'),(12,'PACK'),(13,'CARTON / CRTN'),(14,'CM'),(15,'CM2'),(16,'CM3'),(17,'KG'),(18,'GRAM'),(19,'TON'),(20,'PAIL'),(21,'BUCKET'),(22,'SHEET'),(23,'ROLL'),(24,'TIME'),(25,'CAN'),(26,'DRUM'),(27,'FEET'),(28,'INCH'),(29,'GALLON'),(30,'LITER'),(31,'PAIR'),(32,'POUND'),(33,'SET'),(34,'ONE UNIT'),(35,'TRUCK'),(36,'TUBE'),(37,'YARD'),(38,'MILE'),(39,'KM'),(41,'MM'),(42,'OZ'),(43,'SEC'),(44,'PART'),(45,'CUBIC INCH'),(46,'CUBIC FEET'),(47,'HOUR'),(48,'DAY'),(49,'MONTH'),(50,'YEAR'),(51,'BOTTLE'),(52,'JAR'),(53,'BAR');
+/*!40000 ALTER TABLE `units` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -207,4 +184,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-11-29  9:38:57
+-- Dump completed on 2016-11-29 10:20:35
