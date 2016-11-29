@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dump.jpa;
+package jpa;
 
 import entity.Units;
 import java.io.Serializable;

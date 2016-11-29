@@ -1,9 +1,13 @@
+<%@page import="entity.Gener"%>
+<%@page import="entity.ItemDescription"%>
+<%@page import="jpa.ItemDescriptionJpaController"%>
+<%@page import="jpa.MaterialTypeJpaController"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="entity.MaterialType"%>
 <%@page import="java.util.List"%>
 <%@page import="javax.persistence.EntityManagerFactory"%>
 <%@page import="javax.persistence.Persistence"%>
 <%@page import="model.cons"%>
-<%@page import="jpa.MaterialTypeJpaController"%>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
@@ -66,6 +70,10 @@
 
     <!-- BEGIN BODY -->
     <body class="padTop53 " >
+        <% EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
+            MaterialTypeJpaController materialTypeConroller = new MaterialTypeJpaController(emf);
+            jpa.GenerJpaController generJpaController = new jpa.GenerJpaController(emf);
+            ItemDescriptionJpaController itemDescriptionJpaController = new ItemDescriptionJpaController(emf);%>
 
         <!-- MAIN WRAPPER -->
         <div id="wrap" >
@@ -223,54 +231,83 @@
                                     </div>
                                     <div class="panel-body">
                                         <div class="table-responsive">
-                                            <form method="POST" action="itemdescription"  enctype="multipart/form-data">
-                                                <table class="table table-striped table-bordered table-hover" id="dataTables">
-                                                    <thead>
-                                                        <tr>
-                                                            <!--<th>Type ID</th>-->
-                                                            <th>ID</th>
-                                                            <th>Code</th>
-                                                            <th>Description</th>
-                                                            <th>Item_Type</th>
-                                                            <th>Unit ID</th>
-                                                            <th>Upload</th>
-                                                            <th>Genre</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <!--<td><label>1</label></td>-->
-                                                            <td><input type="text" name="id" class="form-control" readonly="true" /></td>
-                                                            <td><input type="text" name="code"  class="form-control" /></td>
-                                                            <td><input type="text" name="description"  class="form-control" /></td>
-                                                            <td><input type="text" name="item_type"  class="form-control" /></td>
-                                                            <td><input type="text" name="unit_id"  class="form-control" /></td>
-                                                            <td><input type="file" name="fileTOBeUploaded"/>upload</td>
-                                                            <%
-                                                                EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
-                                                                MaterialTypeJpaController controller = new MaterialTypeJpaController(emf);
-                                                                List<MaterialType> materialTypes = controller.findMaterialTypeEntities();
-                                                            %>
-                                                        <td><select name="gener_id" id="gener_id">
-                                                                <%
-                                                                    for (MaterialType materialType : materialTypes) {
-                                                                %>
-                                                                <option value="<% out.print(materialType.getMaterialTypeId());%>"><% out.print(materialType.getItemTypeDesc());%></option>
-                                                                <%
-                                                                    }
-                                                                %>
-
-                                                            </select></td> 
-
+                                            <table class="table table-striped table-bordered table-hover" id="dataTables">
+                                                <thead>
+                                                    <tr>
+                                                        <!--<th>Type ID</th>-->
+                                                        <th>ID</th>
+                                                        <th>Code</th>
+                                                        <th>Description</th>
+                                                        <th>Item_Type</th>
+                                                        <th>Unit ID</th>
+                                                        <th>Upload</th>
+                                                        <th>Genre</th>
+                                                        <th>Operations</th>
                                                     </tr>
+                                                </thead>
+                                                <tbody>
+                                                <%
+                                                    ArrayList<ItemDescription> items = new ArrayList<ItemDescription>(itemDescriptionJpaController.findItemDescriptionEntities());
+                                                    for (ItemDescription item : items) {
+                                                %>
+
+                                                <tr>
+                                                    <!--<td><label>1</label></td>-->
+                                                    <td><input type="text" name="id" class="form-control" readonly="true" value="<% out.print(item.getItemId());%>"/></td>
+                                                    <td><input type="text" name="code"  class="form-control" readonly="true" value="<% out.print(item.getItemCode());%>"/></td>
+                                                    <td><input type="text" name="description"  class="form-control" readonly="true" value="<% out.print(item.getItemDesc());%>"/></td>
+                                                    <td><input type="text" name="item_type"  class="form-control" readonly="true" value="<% out.print(item.getItemTypeId());%>"/></td>
+                                                    <td><input type="text" name="unit_id"  class="form-control" readonly="true" value="<% out.print(item.getUnitId());%>"/></td>
+                                                    <td><input type="text" name="upload_file_name"  class="form-control" readonly="true" value="<% out.print(item.getUploadFileName());%>"/></td>
+                                                    <td><input type="text" name="gener_id"  class="form-control" readonly="true" value="<% out.print(generJpaController.findGener(item.getGenerId()).getGenerDesc());%>"/></td>
+                                                    <td style='white-space: nowrap'>
+                                                        <a class = "btn btn-warning" href="#?editId=<%=item.getItemCode()%>">Edit</a>
+                                                        <a class = "btn btn-danger" href="#?deleteId=<%=item.getItemCode()%>">Delete</a>
+                                                    </td>
+
+                                                </tr>
+
+                                                <%
+                                                    }
+                                                %>
+                                            <form method="POST" action="itemdescription"  enctype="multipart/form-data">
+
+
+                                                <tr>
+                                                    <!--<td><label>1</label></td>-->
+                                                    <td><input type="text" name="id" class="form-control" readonly="true" /></td>
+                                                    <td><input type="text" name="code"  class="form-control" required="true"/></td>
+                                                    <td><input type="text" name="description"  class="form-control" required="true"/></td>
+                                                    <td><input type="text" name="item_type"  class="form-control" required="true"/></td>
+                                                    <td><input type="text" name="unit_id"  class="form-control" required="true"/></td>
+                                                    <td><input type="file" name="fileTOBeUploaded" required="true"/>upload</td>
+                                                        <%
+                                                            try {
+
+                                                                List<Gener> geners = generJpaController.findGenerEntities();
+                                                        %>
+                                                    <td><select name="gener_id" id="gener_id">
+                                                            <%
+                                                                for (Gener gener : geners) {
+                                                            %>
+                                                            <option value="<% out.print(gener.getGenerId());%>"><% out.print(gener.getGenerDesc());%></option>
+                                                            <%
+                                                                    }
+                                                                } catch (Exception e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            %>
+
+                                                        </select></td> 
+
+                                                </tr>
 
                                                 </tbody>
 
-                                            </table>
-                                            <input type="hidden" name="fileUploadForm" value="true"/>
-                                            <input class="btn btn-primary" type="submit" name="addRecord" value="Save" onclick="Add()"/> 
-                                            <input class="btn btn-warning" type="submit" name="submit" value="edit" onclick="save()"/>
-                                            <input class="btn btn-danger    " type="reset" name="submit" value="reset"/>
+                                        </table>
+                                        <input type="hidden" name="fileUploadForm" value="true"/>
+                                        <input class="btn btn-primary" type="submit" name="submit" value="Save" /><!-- onclick="save()" -->
+                                        <input class="btn btn-danger" type="reset" name="submit" value="Reset"/>
                                         </form>
                                     </div>
                                 </div>
@@ -314,9 +351,9 @@
         <script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
         <script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
         <script>
-                                                $(document).ready(function () {
-                                                    $('#dataTables-example').dataTable();
-                                                });
+                                            $(document).ready(function () {
+                                                $('#dataTables-example').dataTable();
+                                            });
         </script>
 
     </body>
