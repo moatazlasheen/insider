@@ -29,6 +29,7 @@ public class MaterialTypeJpaController implements Serializable {
     public MaterialTypeJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
+
     public MaterialTypeJpaController() {
         this.emf = Persistence.createEntityManagerFactory(cons.entityName);
     }
@@ -154,18 +155,21 @@ public class MaterialTypeJpaController implements Serializable {
             em.close();
         }
     }
-    
-    public boolean materialTypeExists ( String description ) {
+
+    public boolean materialTypeExists(String description) {
         boolean exists = false;
-        EntityManager em = getEntityManager();
-        try {
-            MaterialType a = (MaterialType) em.createQuery("SELECT m FROM MaterialType m WHERE m.itemTypeDesc = :itemTypeDesc").setParameter("itemTypeDesc", description).getSingleResult();
-            exists = true;
-        } catch(Exception e){
-            e.printStackTrace();
-        }finally {
-            em.close();
+        if (description != null) {
+            EntityManager em = getEntityManager();
+            try {
+                MaterialType a = (MaterialType) em.createQuery("SELECT m FROM MaterialType m WHERE m.itemTypeDesc = :itemTypeDesc").setParameter("itemTypeDesc", description.trim()).getSingleResult();
+                exists = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
+            }
         }
+
         return exists;
     }
 
