@@ -5,6 +5,7 @@
  */
 package servlet;
 
+import com.google.gson.Gson;
 import entity.ItemDescription;
 import java.io.File;
 import java.io.IOException;
@@ -138,8 +139,10 @@ public class itemdescription extends HttpServlet {
                     // add the item to the database
                     em.getTransaction().begin();
                     ItemDescription itemDescription = new ItemDescription();
+                    if (code != null) {
+                        itemDescription.setItemCode(new Integer(code));
+                    }
 
-                    itemDescription.setItemCode(new Integer(code));
                     itemDescription.setItemDesc(description);
                     itemDescription.setItemTypeId(new Integer(itemType));
                     itemDescription.setUnitId(new Integer(unitId));
@@ -155,6 +158,27 @@ public class itemdescription extends HttpServlet {
                 }
                 //-------------------------------------------------------------------------------------------------------------------------------------
 
+            } else if (request.getParameter("operation") != null && !request.getParameter("operation").isEmpty()) {
+                String operation = request.getParameter("operation");
+                String operationId = request.getParameter("operationId");
+                response.setContentType("application/json");
+                if (operation.equalsIgnoreCase("edit")) { //This is update operation
+
+                } else if (operation.equalsIgnoreCase("delete")) {//This is delete operation
+                    System.out.println("DELETE OPERATION");
+
+                    controller.destroy(new Integer(operationId));
+
+                    ItemDescription item = controller.findItemDescription(new Integer(operationId));
+                    if (item == null) {//Item is deleted from the database
+                        System.out.println("RECORD has been deleted");
+                        out.print(convertMessageIntoJSON(new CustomMessage(100, "Record has been deleted successfully")));
+                    } else {//couldn't delete item
+                        System.out.println("COULDN'T DELETE RECORD");
+                        out.print(convertMessageIntoJSON(new CustomMessage(0, "Error, couldn't delete record")));
+
+                    }
+                }
             } else if (request.getParameter("save") != null) {
                 em.getTransaction().begin();
                 ItemDescription id = new ItemDescription();
@@ -244,4 +268,38 @@ public class itemdescription extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    public class CustomMessage {
+
+        int code;
+        String message;
+
+        public CustomMessage(int code, String message) {
+            this.code = code;
+            this.message = message;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+    }
+
+    private String convertMessageIntoJSON(CustomMessage message) {
+        Gson gson = new Gson();
+
+        return gson.toJson(message);
+
+    }
 }

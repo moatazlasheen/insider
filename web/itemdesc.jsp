@@ -1,3 +1,7 @@
+<%@page import="dto.ItemDescriptionTypeWrapper"%>
+<%@page import="jpa.ItemDescriptionTypeJpaController"%>
+<%@page import="entity.Units"%>
+<%@page import="jpa.UnitsJpaController"%>
 <%@page import="entity.Gener"%>
 <%@page import="entity.ItemDescription"%>
 <%@page import="jpa.ItemDescriptionJpaController"%>
@@ -63,6 +67,14 @@
 
             }
         </script>
+        <style>
+            table td {
+                text-align: center;
+                vertical-align: middle;
+                padding: 5px;
+                position: relative;
+            }
+        </style>
 
     </head>
 
@@ -73,7 +85,10 @@
         <% EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
             MaterialTypeJpaController materialTypeConroller = new MaterialTypeJpaController(emf);
             jpa.GenerJpaController generJpaController = new jpa.GenerJpaController(emf);
-            ItemDescriptionJpaController itemDescriptionJpaController = new ItemDescriptionJpaController(emf);%>
+            ItemDescriptionJpaController itemDescriptionJpaController = new ItemDescriptionJpaController(emf);
+            UnitsJpaController unitsJpaController = new UnitsJpaController(emf);
+            ItemDescriptionTypeJpaController itemDescriptionTypeJpaController = new ItemDescriptionTypeJpaController(emf);
+        %>
 
         <!-- MAIN WRAPPER -->
         <div id="wrap" >
@@ -232,37 +247,38 @@
                                     <div class="panel-body">
                                         <div class="table-responsive">
                                             <table class="table table-striped table-bordered table-hover" id="dataTables">
-                                                <thead>
-                                                    <tr>
+                                                <thead align="center">
+                                                    <tr align="center">
                                                         <!--<th>Type ID</th>-->
-                                                        <th>ID</th>
-                                                        <th>Code</th>
-                                                        <th>Description</th>
-                                                        <th>Item_Type</th>
-                                                        <th>Unit ID</th>
-                                                        <th>Upload</th>
-                                                        <th>Genre</th>
-                                                        <th>Operations</th>
+                                                        <th >ID</th>
+                                                        <th >Code</th>
+                                                        <th >Description</th>
+                                                        <th >Item_Type</th>
+                                                        <th >Unit ID</th>
+                                                        <th class="col-lg-2">Upload</th>
+                                                        <th >Genre</th>
+                                                        <th >Operations</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                 <%
                                                     ArrayList<ItemDescription> items = new ArrayList<ItemDescription>(itemDescriptionJpaController.findItemDescriptionEntities());
+                                                    
                                                     for (ItemDescription item : items) {
                                                 %>
 
-                                                <tr>
+                                                <tr align="center">
                                                     <!--<td><label>1</label></td>-->
-                                                    <td><input type="text" name="id" class="form-control" readonly="true" value="<% out.print(item.getItemId());%>"/></td>
-                                                    <td><input type="text" name="code"  class="form-control" readonly="true" value="<% out.print(item.getItemCode());%>"/></td>
-                                                    <td><input type="text" name="description"  class="form-control" readonly="true" value="<% out.print(item.getItemDesc());%>"/></td>
-                                                    <td><input type="text" name="item_type"  class="form-control" readonly="true" value="<% out.print(item.getItemTypeId());%>"/></td>
-                                                    <td><input type="text" name="unit_id"  class="form-control" readonly="true" value="<% out.print(item.getUnitId());%>"/></td>
-                                                    <td><input type="text" name="upload_file_name"  class="form-control" readonly="true" value="<% out.print(item.getUploadFileName());%>"/></td>
-                                                    <td><input type="text" name="gener_id"  class="form-control" readonly="true" value="<% out.print(generJpaController.findGener(item.getGenerId()).getGenerDesc());%>"/></td>
-                                                    <td style='white-space: nowrap'>
-                                                        <a class = "btn btn-warning" href="#?editId=<%=item.getItemCode()%>">Edit</a>
-                                                        <a class = "btn btn-danger" href="#?deleteId=<%=item.getItemCode()%>">Delete</a>
+                                                    <td align="center" id="id" class="col-lg-1"><% out.print(item.getItemId());%></td>
+                                                    <td valign="middle" class="col-lg-1"><% out.print(item.getItemCode());%></td>
+                                                    <td valign="middle" class="col-lg-2"><% out.print(item.getItemDesc());%></td>
+                                                    <td valign="middle" class="col-lg-2"><% out.print(item.getItemTypeId());%></td>
+                                                    <td valign="middle" class="col-lg-1"><% out.print(unitsJpaController.findUnits(item.getUnitId()).getUnitDesc());%></td>
+                                                    <td valign="middle" class="col-lg-1"><% out.print(item.getUploadFileName());%></td>
+                                                    <td valign="middle" class="col-lg-2"><% out.print(generJpaController.findGener(item.getGenerId()).getGenerDesc());%></td>
+                                                    <td style='white-space: nowrap' class="col-lg-2">
+                                                        <a class = "btn btn-warning" href="#?editId=<%=item.getItemCode()%>" id="editItemDescription" onclick="editItemDescriptionRecord(this)">Edit</a>
+                                                        <a class = "btn btn-danger" href="#?deleteId=<%=item.getItemCode()%>" id="deleteItemDescription" onclick="deleteItemDescriptionRecord(this)">Delete</a>
                                                     </td>
 
                                                 </tr>
@@ -273,20 +289,60 @@
                                             <form method="POST" action="itemdescription"  enctype="multipart/form-data">
 
 
-                                                <tr>
+                                                <tr align="center">
                                                     <!--<td><label>1</label></td>-->
-                                                    <td><input type="text" name="id" class="form-control" readonly="true" /></td>
-                                                    <td><input type="text" name="code"  class="form-control" required="true"/></td>
-                                                    <td><input type="text" name="description"  class="form-control" required="true"/></td>
-                                                    <td><input type="text" name="item_type"  class="form-control" required="true"/></td>
-                                                    <td><input type="text" name="unit_id"  class="form-control" required="true"/></td>
-                                                    <td><input type="file" name="fileTOBeUploaded" required="true"/>upload</td>
+                                                    <td align="center"><input type="text" name="id" class="form-control" readonly="true" /></td>
+                                                    <td align="center"><input type="text" name="code"  class="form-control" /></td>
+                                                    <td align="center">
+                                                        <input list="description" name="description" type="text" required="true">
+                                                        <datalist id="description">
+                                                            <%
+                                                                for (ItemDescription item : items) {
+                                                            %>
+                                                            <option value="<% out.print(item.getItemDesc());%>"></option>
+
+                                                            <% }%>
+                                                        </datalist>
+                                                        <!--<input type="text" name="description"  class="form-control" required="true"/>-->
+
+                                                    </td>
+                                                    <td align="center">
+                                                        <!--<input type="text" name="item_type"  class="form-control" required="true"/>-->
+                                                        <input list="item_type" name="item_type" type="text" required="true">
+                                                        <datalist id="item_type">
+                                                    <% 
+//                                                       ItemDescription item = items.get(0);
+                                                       for(ItemDescriptionTypeWrapper wrapper :itemDescriptionTypeJpaController.getAllData()){
+                                                           %>                                                    
+                                                        <option value="<% out.print(wrapper.getId());%>"><% out.print(wrapper.getDescription());%></option>
+                                                            <% }%>
+                                                        </datalist>
+                                                    </td>
+                                                    <td align="center">
+                                                        <!--                                                        <input type="text" name="unit_id"  class="form-control" required="true"/>-->
+                                                        <input list="units_list" name="unit_id" type="text" required="true">
+
+                                                        <datalist id="units_list">
+                                                            <%
+                                                                for (Units unit : unitsJpaController.findUnitsEntities()) {
+
+                                                            %>
+
+                                                            <option value="<% out.print(unit.getUnitId());%>"><% out.print(unit.getUnitDesc());%></option>
+
+                                                            <%
+                                                                }
+                                                            %>
+
+                                                        </datalist>
+                                                    </td>
+                                                    <td align="center"><input type="file" name="fileTOBeUploaded" required="true" /></td>
                                                         <%
                                                             try {
 
                                                                 List<Gener> geners = generJpaController.findGenerEntities();
                                                         %>
-                                                    <td><select name="gener_id" id="gener_id">
+                                                    <td ><select name="gener_id" id="gener_id">
                                                             <%
                                                                 for (Gener gener : geners) {
                                                             %>
@@ -298,7 +354,8 @@
                                                                 }
                                                             %>
 
-                                                        </select></td> 
+                                                        </select>
+                                                    </td> 
 
                                                 </tr>
 
@@ -308,9 +365,12 @@
                                         <input type="hidden" name="fileUploadForm" value="true"/>
                                         <input class="btn btn-primary" type="submit" name="submit" value="Save" /><!-- onclick="save()" -->
                                         <input class="btn btn-danger" type="reset" name="submit" value="Reset"/>
+
                                         </form>
                                     </div>
                                 </div>
+                                                            <input type="hidden" value="operation" name="operation" id="operation"/>
+                                <input type="hidden" value="operationId" name="operationId" id="operationId"/>
                             </div>
                         </div>
                     </div>
@@ -351,9 +411,68 @@
         <script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
         <script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
         <script>
-                                            $(document).ready(function () {
-                                                $('#dataTables-example').dataTable();
-                                            });
+            $(document).ready(function () {
+                $('#dataTables-example').dataTable();
+            });
+            function editItemDescriptionRecord(editButton) {
+                var $row = $(editButton).closest("tr");  
+                var $text = $row.find("#id").text(); // Find the text
+
+                // Let's test it out
+//                alert($text);
+                var operationId = $text;
+                var operation= "edit";
+                $("#operationId").val($text);
+                $("#operation").val("edit");
+                //---------------Start the ajax request ---------------------------
+//                $.ajax({
+//                    url: "itemdescription",
+//                    type: "get", //send it through get method
+//                    data:{operation:operation,operationId:operationId},
+//                    success: function(response) {
+//                      //Do Something
+//                    },
+//                    error: function(xhr) {
+//                      //Do Something to handle error
+//                    }
+//                  });
+            }
+            //-------------------------------------------------------------------
+            // This method repsonsible for deleting a record
+            //-------------------------------------------------------------------
+            
+            function deleteItemDescriptionRecord(deleteButton) {
+                if (confirm("Do you really want to delete this record? ") == true) {
+//                    x = "You pressed OK!";
+                    var $row = $(deleteButton).closest("tr");  
+                    var $text = $row.find("#id").text(); // Find the text
+
+                    // Let's test it out
+    //                alert($text);
+                    var operationId = $text;
+                    var operation= "delete";
+                    $("#operationId").val($text);
+                    $("#operation").val("edit");
+                    //---------------Start the ajax request ---------------------------
+                    $.ajax({
+                        url: "itemdescription",
+                        type: "get", //send it through get method
+                        data:{operation:operation,operationId:operationId},
+                        success: function(response) {
+                          //Do Something
+                          alert(response.message);
+                          $row.remove();
+                        },
+                        error: function(xhr) {
+                          //Do Something to handle error
+                          alert('couldn\'t delete item description');
+                        }
+                      });
+                } else {
+//                    x = "You pressed Cancel!";
+                }
+                
+            }
         </script>
 
     </body>
