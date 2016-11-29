@@ -139,12 +139,17 @@ public class MaterialCategourtJpaController implements Serializable {
     public List<MaterialType> getAllMaterialsByCat(Integer catID) {
         EntityManager em = getEntityManager();
         try {
-            String sql = "FROM MaterialCategourt m";
+            String sql = "FROM MaterialCategourt m.materailCategouryId=" + catID;
             em.createQuery(sql);
             Query query = em.createQuery(sql);
-            List materialIDs = query.getResultList();
-            sql = "FROM MaterialType m WHERE m.materialTypeId in(" + materialIDs
-                    + ")";
+            List<MaterialType> materialIDs = query.getResultList();
+            StringBuilder strBuilder = new StringBuilder();
+            for (int i = 0; i < materialIDs.size(); i++) {
+                strBuilder.append(materialIDs.get(i).getMaterialTypeId() + ",");
+            }
+            String strings = strBuilder.toString();
+            sql = "FROM MaterialType m WHERE m.materialTypeId in("
+                    + strings.substring(0, strings.length() - 1) + ")";
             query = em.createQuery(sql);
             return query.getResultList();
         } finally {

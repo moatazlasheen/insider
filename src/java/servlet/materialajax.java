@@ -58,6 +58,7 @@ public class materialajax extends HttpServlet {
                 List<MaterialType> materials = new MaterialCategourtJpaController(emf).getAllMaterialsByCat(catID);
                 Gson gson = new Gson();
                 String json = gson.toJson(materials);
+                System.out.println(json);
                 response.getWriter().write(json);
 
             } catch (Exception e) {
