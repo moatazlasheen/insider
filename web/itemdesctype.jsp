@@ -41,16 +41,12 @@
         <script>
 
             var elementsToJson = [];
-
-
             $(document).ready(function () {
                 $("#jsonNotifier").hide();
             });
-
             function add() {
                 var selectedCat = $("#cat option:selected");
                 var selectedMaterial = $("#materials option:selected");
-
                 $('#dataTables > tbody > tr:first').before('<tr><td>' + selectedCat.text() + '</td><td>' + selectedMaterial.text() + '</td></tr>');
                 elementsToJson.push([selectedCat.val(), selectedMaterial.val()]);
             }
@@ -70,13 +66,26 @@
                     success: function (data) {
                         alert(data);
                         $("#jsonNotifier").show();
-
                     }
                 });
-
                 return false;
             }
+            function deleteItem() {
+                var selected = [];
+                $('.items:checkbox:checked').each(function () {
+                    selected.push($(this).val());
+                    alert($(this).val());
+                });
+                $.post('itemdescriptionajax',
+                        {
+                            elements: selected
+                        }, function (data) {
+                    alert(data);
 
+                }
+                );
+                return false;
+            }
 
 //            function getAllMaterialsByCat() {
 //                $("#materials").empty().append("<option>materials</option>").prop("disabled", true);
@@ -271,19 +280,24 @@
                                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                                     <strong>Success!</strong> Data is inserted
                                                 </div>
+
                                                 <table id="itemDescriptionTable" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th>Item Description</th>
+                                                            <th>Select</th>
+                                                            <th>Item</th>
                                                         </tr>
                                                     </thead>
 
                                                 <c:forEach var="item" items="${requestScope.itemsWrappers}">
-                                                    <tr><td>${item.description}</td></tr>
-                                                </c:forEach>
+                                                    <tr>
+                                                        <td><input type="checkbox" value="${item.id}" class="items"></td>
+                                                        <td>${item.description}</td></tr>
+                                                    </c:forEach>
                                                 <tbody>
 
                                             </table>
+
                                             <table class="table table-striped table-bordered table-hover" id="dataTables">
                                                 <thead>
                                                     <tr>
@@ -314,7 +328,7 @@
 
                                             </table>
                                             <input class="btn btn-primary" type="button" name="addBtn" value="add" onclick="add()"/> 
-                                            <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> 
+                                            <!--                                            <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> -->
                                             <input class="btn btn-success" type="button" name="saveBtn" value="save" onclick="save()"/>
                                             <input class="btn btn-danger" type="button" name="editBtn" value="delete" onclick="deleteItem()"/> 
                                         </form>

@@ -50,6 +50,11 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
         saveData(request, response);
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        deleteItems(req, resp);
+    }
+
     /**
      * Returns a short description of the servlet.
      *
@@ -67,13 +72,13 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
         try {
             emf = Persistence.createEntityManagerFactory(cons.entityName);
             em = emf.createEntityManager();
-            
+
             String param = request.getParameter("elements");
-            
+
             if (param == null) {
-                
+
                 response.getWriter().write("none");
-                
+
                 return;
             }
             int[][] elements = gson.fromJson(param, int[][].class);
@@ -89,9 +94,42 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
             if (emf != null) {
                 emf.close();
             }
-            
+
         }
-        
+
     }
-    
+
+    private void deleteItems(HttpServletRequest request, HttpServletResponse response) {
+        Gson gson = new Gson();
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+        try {
+            emf = Persistence.createEntityManagerFactory(cons.entityName);
+            em = emf.createEntityManager();
+
+            String param = request.getParameter("elements");
+
+            if (param == null) {
+
+                response.getWriter().write("none");
+
+                return;
+            }
+            int[][] elements = gson.fromJson(param, int[][].class);
+            ItemDescriptionTypeJpaController itemCtl = new ItemDescriptionTypeJpaController(emf);
+            itemCtl.deleteItems(elements);
+            response.getWriter().write("done");
+        } catch (IOException ex) {
+            Logger.getLogger(ItemDescriptionTypeServletAjax.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            if (emf != null) {
+                emf.close();
+            }
+
+        }
+    }
+
 }

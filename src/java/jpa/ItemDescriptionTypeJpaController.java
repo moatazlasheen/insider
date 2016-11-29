@@ -9,6 +9,7 @@ import dto.ItemDescriptionTypeWrapper;
 import entity.ItemDescriptionType;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -178,6 +179,17 @@ public class ItemDescriptionTypeJpaController implements Serializable {
             itemWrappers.add(new ItemDescriptionTypeWrapper(Integer.parseInt(obj[0].toString()), obj[1].toString() + " - " + obj[2].toString()));
         }
         return itemWrappers;
+    }
+
+    public void deleteItems(int[][] elements) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        String sql = "DELETE FROM ItemDescriptionType i WHERE i.itemTypeId IN (:list) ";
+        Query query = em.createQuery(sql);
+        query.setParameter("list", Arrays.asList(elements));
+        query.executeUpdate();
+        em.getTransaction().commit();
+
     }
 
 }
