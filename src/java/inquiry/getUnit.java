@@ -8,7 +8,6 @@ package inquiry;
 import entity.Gener;
 import entity.ItemDescription;
 import entity.ItemDescriptionType;
-import entity.MaterialCategourt;
 import entity.MaterialType;
 import entity.Units;
 import java.util.List;
