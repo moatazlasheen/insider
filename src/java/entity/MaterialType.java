@@ -9,9 +9,12 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -22,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author ramy
  */
 @Entity
-@Table(name = "material_type", catalog = "insider3_insider360", schema = "")
+@Table(name = "material_type", schema = "")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "MaterialType.findAll", query = "SELECT m FROM MaterialType m"),
@@ -38,6 +41,10 @@ public class MaterialType implements Serializable {
     private Integer materialTypeId;
     @Column(name = "item_type_desc", length = 150)
     private String itemTypeDesc;
+    
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn( name = "material_category" ,referencedColumnName = "materail_categoury_id")
+    private MaterialCategourt materialCategory;
 
     public MaterialType() {
     }
@@ -61,6 +68,16 @@ public class MaterialType implements Serializable {
     public void setItemTypeDesc(String itemTypeDesc) {
         this.itemTypeDesc = itemTypeDesc;
     }
+
+    public MaterialCategourt getMaterialCategory() {
+        return materialCategory;
+    }
+
+    public void setMaterialCategory(MaterialCategourt materialCategory) {
+        this.materialCategory = materialCategory;
+    }
+    
+    
 
     @Override
     public int hashCode() {
