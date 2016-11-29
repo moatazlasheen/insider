@@ -7,9 +7,9 @@ package servlet;
 
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import dto.ItemDescriptionTypeWrapper;
-import dump.jpa.GenerJpaController;
-import dump.jpa.ItemDescriptionTypeJpaController;
-import dump.jpa.MaterialTypeJpaController;
+import jpa.GenerJpaController;
+import jpa.ItemDescriptionTypeJpaController;
+import jpa.MaterialTypeJpaController;
 import entity.Gener;
 import entity.ItemDescriptionType;
 import entity.MaterialCategourt;

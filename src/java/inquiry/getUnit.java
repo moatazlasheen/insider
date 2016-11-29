@@ -13,11 +13,11 @@ import entity.Units;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import dump.jpa.GenerJpaController;
-import dump.jpa.ItemDescriptionJpaController;
-import dump.jpa.ItemDescriptionTypeJpaController;
-import dump.jpa.MaterialTypeJpaController;
-import dump.jpa.UnitsJpaController;
+import jpa.GenerJpaController;
+import jpa.ItemDescriptionJpaController;
+import jpa.ItemDescriptionTypeJpaController;
+import jpa.MaterialTypeJpaController;
+import jpa.UnitsJpaController;
 import model.cons;
 
 /**

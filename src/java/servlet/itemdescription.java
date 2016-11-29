@@ -20,7 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import dump.jpa.ItemDescriptionJpaController;
+import jpa.ItemDescriptionJpaController;
 import model.cons;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
@@ -87,7 +87,7 @@ public class itemdescription extends HttpServlet {
                     // this path is relative to application's directory
 //                    String uploadPath = getServletContext().getRealPath("")
 //                            + File.separator + UPLOAD_DIRECTORY;
-                    String uploadPath = "F:\\insideUpload";
+                    String uploadPath = "E:\\insideUpload";
                     // creates the directory if it does not exist
                     File uploadDir = new File(uploadPath);
                     if (!uploadDir.exists()) {

@@ -9,7 +9,6 @@
 package servlet;
 
 import com.google.gson.Gson;
-import dump.jpa.ItemDescriptionTypeJpaController;
 import entity.MaterialType;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,6 +24,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import jpa.ItemDescriptionTypeJpaController;
 import jpa.MaterialCategourtJpaController;
 import model.cons;
 
