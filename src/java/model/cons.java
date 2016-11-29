@@ -11,5 +11,6 @@ package model;
  */
 public class cons {
     public final static String entityName="insider360PU";
+    public final static String UPLOAD_DIRECTORY = "upload";
     
 }

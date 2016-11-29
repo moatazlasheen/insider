@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+<%@page import="entity.MaterialType"%>
+<%@page import="java.util.List"%>
+<%@page import="javax.persistence.EntityManagerFactory"%>
+<%@page import="javax.persistence.Persistence"%>
+<%@page import="model.cons"%>
+<%@page import="jpa.MaterialTypeJpaController"%>
+<!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
@@ -240,11 +246,20 @@
                                                             <td><input type="text" name="item_type"  class="form-control" /></td>
                                                             <td><input type="text" name="unit_id"  class="form-control" /></td>
                                                             <td><input type="file" name="fileTOBeUploaded"/>upload</td>
-                                                            <td><select name="materials">
-                                                                    <option>materials</option>
-                                                                <c:forEach var="material" items="${materials}">
-                                                                    <option value="${material.materialTypeId}">${material.itemTypeDesc}</option>
-                                                                </c:forEach>
+                                                            <%
+                                                                EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
+                                                                MaterialTypeJpaController controller = new MaterialTypeJpaController(emf);
+                                                                List<MaterialType> materialTypes = controller.findMaterialTypeEntities();
+                                                            %>
+                                                        <td><select name="gener_id" id="gener_id">
+                                                                <%
+                                                                    for (MaterialType materialType : materialTypes) {
+                                                                %>
+                                                                <option value="<% out.print(materialType.getMaterialTypeId());%>"><% out.print(materialType.getItemTypeDesc());%></option>
+                                                                <%
+                                                                    }
+                                                                %>
+
                                                             </select></td> 
 
                                                     </tr>
@@ -252,8 +267,8 @@
                                                 </tbody>
 
                                             </table>
-                                                <input type="hidden" name="fileUploadForm" value="true"/>
-                                            <input class="btn btn-primary" type="button" name="addRecord" value="Save" onclick="Add()"/> 
+                                            <input type="hidden" name="fileUploadForm" value="true"/>
+                                            <input class="btn btn-primary" type="submit" name="addRecord" value="Save" onclick="Add()"/> 
                                             <input class="btn btn-warning" type="submit" name="submit" value="edit" onclick="save()"/>
                                             <input class="btn btn-danger    " type="reset" name="submit" value="reset"/>
                                         </form>

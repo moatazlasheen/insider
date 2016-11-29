@@ -74,7 +74,7 @@ public class ItemDescription implements Serializable {
     @Basic(optional = false)
     @Column(name = "gener_id", nullable = false)
     private int generId;
-    @Column(name = "upload_file_name", length = 250)
+    @Column(name = "upload_file_name")
     private String uploadFileName;
 
     public ItemDescription() {
@@ -84,12 +84,13 @@ public class ItemDescription implements Serializable {
         this.itemId = itemId;
     }
 
-    public ItemDescription(Integer itemId, int itemCode, int itemTypeId, int unitId, int generId) {
+    public ItemDescription(Integer itemId, int itemCode, int itemTypeId, int unitId, int generId, String uploadFileName) {
         this.itemId = itemId;
         this.itemCode = itemCode;
         this.itemTypeId = itemTypeId;
         this.unitId = unitId;
         this.generId = generId;
+        this.uploadFileName = uploadFileName;
     }
 
     public Integer getItemId() {
@@ -195,8 +196,6 @@ public class ItemDescription implements Serializable {
     public void setUploadFileName(String uploadFileName) {
         this.uploadFileName = uploadFileName;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -222,5 +221,5 @@ public class ItemDescription implements Serializable {
     public String toString() {
         return "entity.ItemDescription[ itemId=" + itemId + " ]";
     }
-    
+
 }
