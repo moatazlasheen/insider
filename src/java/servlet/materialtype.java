@@ -5,6 +5,7 @@
  */
 package servlet;
 
+import entity.MaterialCategourt;
 import entity.MaterialType;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -57,6 +58,11 @@ public class materialtype extends HttpServlet {
                  MaterialType mt=new MaterialType();
                 mt=controller.findMaterialType(new Integer(request.getParameter("edit_material_id").trim()));
                 mt.setItemTypeDesc(request.getParameter("editevalue").trim());
+                String materialTypeCategory = request.getParameter("materialTypeCat");
+                if (materialTypeCategory!=null) {
+                    mt.setMaterialCategory((MaterialCategourt) em.createQuery("SELECT m FROM MaterialCategourt m WHERE m.materialCategouryDesc = :materialCategouryDesc").setParameter("materialCategouryDesc", materialTypeCategory.trim()).getSingleResult());
+                }
+                
                 controller.edit(mt);
                 em.getTransaction().commit();
                 response.sendRedirect("materialtype.jsp");
