@@ -5,17 +5,17 @@
  */
 package servlet;
 
+import entity.MaterialCategourt;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import jpa.MaterialCategourtJpaController;
 import model.cons;
 
 /**
@@ -35,6 +35,42 @@ public class materialcategoury extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //        response.setContentType("text/html;charset=UTF-8");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
+        MaterialCategourtJpaController materialCategourtJpaController = new MaterialCategourtJpaController(emf);
+        String operation = request.getParameter("operation");
+        if (operation != null && !operation.isEmpty()) {
+            if (operation.equalsIgnoreCase("addCategory")) {
+                String categoryDescription = request.getParameter("material_desc");
+                MaterialCategourt category = new MaterialCategourt();
+                category.setMaterialCategouryDesc(categoryDescription);
+                materialCategourtJpaController.create(category);
+                response.sendRedirect("materialcat.jsp");
+
+            } else if (operation.equalsIgnoreCase("editCategory")) {
+                try {
+                    String categoryId = request.getParameter("edit_material_id");
+                    String categoryDescription = request.getParameter("editevalue");
+                    MaterialCategourt category = new MaterialCategourt(new Integer(categoryId.trim()));
+                    category.setMaterialCategouryDesc(categoryDescription);
+                    materialCategourtJpaController.edit(category);
+                    response.sendRedirect("materialcat.jsp");
+                } catch (Exception ex) {
+                    Logger.getLogger(materialcategoury.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            } else if (operation.equalsIgnoreCase("deleteCategory")) {
+                try {
+                    String categoryId = request.getParameter("deletionId");
+                    System.out.println("DELETIONID: "+categoryId);
+                    materialCategourtJpaController.destroy(new Integer(categoryId.trim()));
+                    response.sendRedirect("materialcat.jsp");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            response.sendRedirect("materialcat.jsp");
+        }
 //        PrintWriter out = response.getWriter();
 //        EntityManagerFactory emf = null;
 //        EntityManager em = null;

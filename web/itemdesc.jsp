@@ -274,7 +274,7 @@
                                                     <td valign="middle" class="col-lg-2"><% out.print(item.getItemDesc());%></td>
                                                     <td valign="middle" class="col-lg-2"><% out.print(item.getItemTypeId());%></td>
                                                     <td valign="middle" class="col-lg-1"><% out.print(unitsJpaController.findUnits(item.getUnitId()).getUnitDesc());%></td>
-                                                    <td valign="middle" class="col-lg-1"><% out.print(item.getUploadFileName());%></td>
+                                                    <td valign="middle" class="col-sm-2"><% out.print(item.getUploadFileName());%></td>
                                                     <td valign="middle" class="col-lg-2"><% out.print(generJpaController.findGener(item.getGenerId()).getGenerDesc());%></td>
                                                     <td style='white-space: nowrap' class="col-lg-2">
                                                         <a class = "btn btn-warning" href="#?editId=<%=item.getItemCode()%>" id="editItemDescription" onclick="editItemDescriptionRecord(this)">Edit</a>
@@ -291,7 +291,7 @@
 
                                                 <tr align="center">
                                                     <!--<td><label>1</label></td>-->
-                                                    <td align="center"><input type="text" name="id" class="form-control" readonly="true" /></td>
+                                                    <td align="center"></td>
                                                     <td align="center"><input type="text" name="code"  class="form-control" /></td>
                                                     <td align="center">
                                                         <input list="description" name="description" type="text" required="true">
@@ -308,7 +308,7 @@
                                                     </td>
                                                     <td align="center">
                                                         <!--<input type="text" name="item_type"  class="form-control" required="true"/>-->
-                                                        <input list="item_type" name="item_type" type="text" required="true">
+                                                        <input list="item_type" name="item_type" type="text" required="true" class="col-sm-2">
                                                         <datalist id="item_type">
                                                     <% 
 //                                                       ItemDescription item = items.get(0);
@@ -336,7 +336,7 @@
 
                                                         </datalist>
                                                     </td>
-                                                    <td align="center"><input type="file" name="fileTOBeUploaded" required="true" /></td>
+                                                    <td align="center"><input type="file" name="fileTOBeUploaded" required="true" class="col-sm-2"/></td>
                                                         <%
                                                             try {
 

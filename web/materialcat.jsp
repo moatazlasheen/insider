@@ -1,3 +1,7 @@
+<%@page import="jpa.MaterialCategourtJpaController"%>
+<%@page import="javax.persistence.Persistence"%>
+<%@page import="model.cons"%>
+<%@page import="javax.persistence.EntityManagerFactory"%>
 <%@page import="inquiry.getUnit"%>
 <%@page import="entity.MaterialCategourt"%>
 <%@page import="java.util.List"%>
@@ -50,29 +54,31 @@
                 self.close();
             }
 
-           function ram() {
-            $(".use-address").click(function () {
-                var $row = $(this).closest("tr");    // Find the row
-                var $text = $row.find(".descc").text(); // Find the text
-                var $text1 = $row.find(".idd").text(); // Find the text
+            function ram() {
+                $(".use-address").click(function () {
+                    var $row = $(this).closest("tr");    // Find the row
+                    var $text = $row.find(".descc").text(); // Find the text
+                    var $text1 = $row.find(".idd").text(); // Find the text
 
-                // Let's test it out
-                document.getElementById("editevalue").value=$text;
-                document.getElementById("edit_unit_id").value=$text1;
-            });
-             
-             }
-             
-               function ram2() {
-            $(".use-address").click(function () {
-                var $row = $(this).closest("tr");    // Find the row
-                var $text1 = $row.find(".idd").text(); // Find the text
+                    // Let's test it out
+//                    alert($text);
+                    document.getElementById("editevalue").value = $text;
+                    document.getElementById("edit_unit_id").value = $text1;
+                });
 
-                // Let's test it out
-                document.getElementById("id_value_del").value=$text1;
-            });
-             
-             }
+            }
+
+            function ram2() {
+                $(".use-address").click(function () {
+                    var $row = $(this).closest("tr");    // Find the row
+                    var $text1 = $row.find(".idd").text(); // Find the text
+
+                    // Let's test it out
+                    $("#deletionId").val($text1);
+                    document.getElementById("id_value_del").value = $text1;
+                });
+
+            }
         </script>
 
     </head>
@@ -81,6 +87,12 @@
 
     <!-- BEGIN BODY -->
     <body class="padTop53 " >
+        <%
+
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
+
+            MaterialCategourtJpaController materialCategourtJpaController = new MaterialCategourtJpaController(emf);
+        %>
 
         <!-- MAIN WRAPPER -->
         <div id="wrap" >
@@ -246,18 +258,21 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <!--<td><label>1</label></td>-->
-                                                    <%
+                                                <%                                                //List<MaterialCategourt> rr = new getUnit().getMaterialCat();
+                                                    //for (int i = 0; i < rr.size(); i++) {
+                                                    ;
+                                                    for (MaterialCategourt category : materialCategourtJpaController.findMaterialCategourtEntities()) {
 
-                                                        List<MaterialCategourt> rr = new getUnit().getMaterialCat();
-                                                        for (int i = 0; i < rr.size(); i++) {
-                                                    %>
-                                                    <td class="idd" style="display: none;"><%=rr.get(i).getMaterailCategouryId() %> </td>
-                                                    <td class="descc"><%=rr.get(i).getMaterialCategouryDesc()%></td>                                                
+
+                                                %>
+                                                <tr>
+                                                    <!--<td><label>1</label></td>-->
+
+                                                    <td class="idd" style="display: none;" id="id"><% out.print(category.getMaterailCategouryId());%> </td>
+                                                    <td class="descc"><% out.print(category.getMaterialCategouryDesc());%></td>                                                
                                                     <td>
-                                                        <button type="button" class="btn btn-default btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal2"  data-toggle="modal"  aria-hidden="true"  onclick="ram()">EDIT</button>
-                                                        <button type="button" class="btn btn-danger btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal"  data-toggle="modal"  aria-hidden="true" onclick="ram2()">DEL</button>
+                                                        <button type="button" class="btn btn-default btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal2"  data-toggle="modal"  aria-hidden="true"   id="editButton">EDIT</button>
+                                                        <button type="button" class="btn btn-danger btn-sm btn-grad btn-rect use-address" data-target="#buttonedModal"  data-toggle="modal"  aria-hidden="true" id="deleteButton">DELETE</button>
 
                                                     </td>
                                                 </tr>
@@ -298,11 +313,13 @@
                             <h4 class="modal-title" id="H1">Del material category</h4>
                         </div>
                         <div class="modal-body">
-                            are you confirm to delete this record
+                            are you sure you want to delete this record
                         </div>
                         <div class="modal-footer">
                             <form method="POST" action="materialcategoury">
-                                <input type="hidden" name="id_value_del" id="id_value_del" />
+                                <input type="hidden" name="id_value_del" id="id_value_del" value=""/>
+                                <input type="hidden" id="deletionId" name="deletionId"/>
+                                <input type="hidden" name="operation" value="deleteCategory"/>
                                 <button type="submit" class="btn btn-primary" name="del_material" value="delete">DELETE</button>
                             </form>
                         </div>
@@ -321,13 +338,15 @@
                             <h4 class="modal-title" id="H1">Edit Material Category</h4>
                         </div>
                         <form role="form" method="POST" action="materialcategoury">
-                        <div class="modal-body">
-                            <input autofocus=""  type="text" class="form-control" name="editevalue" placeholder="enter your material category"  id="editevalue" required="" />
-                            <input type="hidden" name="edit_material_id" id="edit_unit_id"  />
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-default"  name="update" value="update">Update</button>
-                        </div>
+                            <div class="modal-body">
+                                <input autofocus=""  type="text" class="form-control" name="editevalue" placeholder="enter your material category"  id="editevalue" required="true" />
+                                <input type="hidden" name="edit_material_id" id="edit_unit_id"  />
+                                <input type="hidden" name="operation" value="editCategory"/>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="reset" name="Reser" value="Reset" class="btn btn-default">Reset</button>
+                                <button type="submit" class="btn btn-default"  name="update" value="update">Update</button>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -346,10 +365,13 @@
                             <form role="form" action="materialcategoury" method="POST">
                                 <div class="form-group">
                                     <label>material category</label>
-                                    <input clas="form-control" type="text" name="material_desc" placeholder="enter material category description" required=""/>
+                                    <input clas="form-control" type="text" name="material_desc" placeholder="Enter material category description" required="true"/>
+                                    <input type="hidden" name="operation" value="addCategory"/>
                                 </div>                                      
                                 <div class="modal-footer">
+                                    <button type="reset" name="Reser" value="Reset" class="btn btn-default">Reset</button>
                                     <button type="submit" name="save" value="save" class="btn btn-primary">Save changes</button>
+                                    
                                 </div>
                             </form>
                         </div>                            
@@ -393,9 +415,11 @@
         <script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
         <script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
         <script>
-            $(document).ready(function () {
-                $('#dataTables-example').dataTable();
-            });
+                                                            $(document).ready(function () {
+                                                                $('#dataTables-example').dataTable();
+                                                                $("#editButton").on("click", ram());
+                                                                $("#deleteButton").on("click", ram2());
+                                                            });
         </script>
     </body>
 
