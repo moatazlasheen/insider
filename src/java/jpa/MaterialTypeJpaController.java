@@ -5,6 +5,7 @@
  */
 package jpa;
 
+import entity.MaterialCategourt;
 import entity.MaterialType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,9 +14,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import jpa.exceptions.NonexistentEntityException;
+import model.cons;
 
 /**
  *
@@ -25,6 +28,9 @@ public class MaterialTypeJpaController implements Serializable {
 
     public MaterialTypeJpaController(EntityManagerFactory emf) {
         this.emf = emf;
+    }
+    public MaterialTypeJpaController() {
+        this.emf = Persistence.createEntityManagerFactory(cons.entityName);
     }
     private EntityManagerFactory emf = null;
 
@@ -147,6 +153,20 @@ public class MaterialTypeJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public boolean materialTypeExists ( String description ) {
+        boolean exists = false;
+        EntityManager em = getEntityManager();
+        try {
+            MaterialType a = (MaterialType) em.createQuery("SELECT m FROM MaterialType m WHERE m.itemTypeDesc = :itemTypeDesc").setParameter("itemTypeDesc", description).getSingleResult();
+            exists = true;
+        } catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            em.close();
+        }
+        return exists;
     }
 
 }
