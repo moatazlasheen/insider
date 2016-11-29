@@ -6,7 +6,6 @@ GPL * modify it under the terms of the GNU General Public License
 GPL * as published by the Free Software Foundation; either version 2
 GPL * of the License, or (at your option) any later version.
  */
-
 package entity;
 
 import java.io.Serializable;
@@ -58,6 +57,11 @@ public class ItemDescriptionType implements Serializable {
         this.itemTypeId = itemTypeId;
         this.materialTypeId = materialTypeId;
         this.materialCategoryId = materialCategoryId;
+    }
+
+    public ItemDescriptionType(int materialCategoryId, int materialTypeId) {
+        this.materialCategoryId = materialCategoryId;
+        this.materialTypeId = materialTypeId;
     }
 
     public Integer getItemTypeId() {

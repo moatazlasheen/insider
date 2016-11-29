@@ -5,8 +5,10 @@
  */
 package dump.jpa;
 
+import dto.ItemDescriptionTypeWrapper;
 import entity.ItemDescriptionType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -145,6 +147,37 @@ public class ItemDescriptionTypeJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+
+    public boolean saveItems(int[][] elements) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+
+        if (elements.length <= 0) {
+            return false;
+        }
+
+        for (int i = 0; i < elements.length; i++) {
+            System.out.println("trace ids:" + elements[i][0]);
+            em.persist(new ItemDescriptionType(elements[i][0], elements[i][1]));
+        }
+
+        em.getTransaction().commit();
+        return true;
+    }
+
+    public List<ItemDescriptionTypeWrapper> getAllData() {
+        EntityManager em = getEntityManager();
+        String sql = "SELECT i.itemTypeId, m.materialCategouryDesc, mt.itemTypeDesc FROM ItemDescriptionType i, MaterialCategourt  m, MaterialType mt "
+                + "WHERE i.materialCategoryId=m.materailCategouryId AND i.materialTypeId=mt.materialTypeId";
+        Query query = em.createQuery(sql);
+        List result = query.getResultList();
+        List<ItemDescriptionTypeWrapper> itemWrappers = new ArrayList<ItemDescriptionTypeWrapper>();
+        for (int i = 0; i < result.size(); i++) {
+            Object[] obj = (Object[]) result.get(i);
+            itemWrappers.add(new ItemDescriptionTypeWrapper(Integer.parseInt(obj[0].toString()), obj[1].toString() + " - " + obj[2].toString()));
+        }
+        return itemWrappers;
     }
 
 }

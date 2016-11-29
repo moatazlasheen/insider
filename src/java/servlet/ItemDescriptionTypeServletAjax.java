@@ -9,10 +9,14 @@
 package servlet;
 
 import com.google.gson.Gson;
+import dump.jpa.ItemDescriptionTypeJpaController;
 import entity.MaterialType;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,58 +25,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import jpa.MaterialCategourtJpaController;
 import model.cons;
 
 /**
  *
  * @author mrnull <ahmadmoawad3@gmail.com>
  */
-@WebServlet(name = "materialajax", urlPatterns = {"/materialajax"})
-public class materialajax extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        EntityManager em = null;
-        EntityManagerFactory emf = null;
-
-        String catStr = request.getParameter("catID");
-        if (catStr == null) {
-            response.getWriter().write("none");
-        } else {
-            try {
-
-                Integer catID = Integer.parseInt(catStr);
-
-                emf = Persistence.createEntityManagerFactory(cons.entityName);
-                em = emf.createEntityManager();
-//                List<MaterialType> materials = new GenerMaterialsJpaController(emf).getAllMaterialsByCat(catID);
-                Gson gson = new Gson();
-//                String json = gson.toJson(materials);
-//                System.out.println(json);
-//                response.getWriter().write(json);
-
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            } finally {
-                if (em != null) {
-                    em.close();
-                }
-                if (emf != null) {
-                    emf.close();
-                }
-
-            }
-        }
-    }
+@WebServlet(name = "itemdescriptionajax", urlPatterns = {"/itemdescriptionajax"})
+public class ItemDescriptionTypeServletAjax extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -86,7 +47,7 @@ public class materialajax extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        saveData(request, response);
     }
 
     /**
@@ -99,4 +60,38 @@ public class materialajax extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    private void saveData(HttpServletRequest request, HttpServletResponse response) {
+        Gson gson = new Gson();
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+        try {
+            emf = Persistence.createEntityManagerFactory(cons.entityName);
+            em = emf.createEntityManager();
+            
+            String param = request.getParameter("elements");
+            
+            if (param == null) {
+                
+                response.getWriter().write("none");
+                
+                return;
+            }
+            int[][] elements = gson.fromJson(param, int[][].class);
+            ItemDescriptionTypeJpaController itemCtl = new ItemDescriptionTypeJpaController(emf);
+            itemCtl.saveItems(elements);
+            response.getWriter().write("done");
+        } catch (IOException ex) {
+            Logger.getLogger(ItemDescriptionTypeServletAjax.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            if (emf != null) {
+                emf.close();
+            }
+            
+        }
+        
+    }
+    
 }

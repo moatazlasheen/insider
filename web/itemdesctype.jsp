@@ -39,19 +39,20 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
         <script>
+
+            var elementsToJson = [];
+
+
             $(document).ready(function () {
                 $("#jsonNotifier").hide();
             });
-            var elementsToJson = [];
 
             function add() {
                 var selectedCat = $("#cat option:selected");
                 var selectedMaterial = $("#materials option:selected");
 
                 $('#dataTables > tbody > tr:first').before('<tr><td>' + selectedCat.text() + '</td><td>' + selectedMaterial.text() + '</td></tr>');
-                elementsToJson.push([][selectedCat.val(), selectedMaterial.val()]);
-                alert(JSON.stringify(elementsToJson));
-
+                elementsToJson.push([selectedCat.val(), selectedMaterial.val()]);
             }
 
             function edit() {
@@ -59,34 +60,48 @@
 
             }
             function save() {
-                $("#jsonNotifier").show();
-            }
 
-
-            function getAllMaterialsByCat() {
-                $("#materials").empty().append("<option>materials</option>").prop("disabled", true);
-                var cat = $("#cat option:selected").val();
-
+                var json = JSON.stringify(elementsToJson);
                 $.ajax({
-                    url: 'materialajax',
+                    url: 'itemdescriptionajax',
                     data: {
-                        catID: cat
+                        elements: json
                     },
                     success: function (data) {
-                        var options = "";
-                        var json = JSON.parse(data);
+                        alert(data);
+                        $("#jsonNotifier").show();
 
-                        for (var i = 0; i < json.length; i++) {
-                            options += "<option value = '" + json[i].materialTypeId + "'>" + json[i].itemTypeDesc + " </option>";
-
-                        }
-
-                        $("#materials").append(options).prop("disabled", false);
                     }
                 });
 
                 return false;
             }
+
+
+//            function getAllMaterialsByCat() {
+//                $("#materials").empty().append("<option>materials</option>").prop("disabled", true);
+//                var cat = $("#cat option:selected").val();
+//
+//                $.ajax({
+//                    url: 'materialajax',
+//                    data: {
+//                        catID: cat
+//                    },
+//                    success: function (data) {
+//                        var options = "";
+//                        var json = JSON.parse(data);
+//
+//                        for (var i = 0; i < json.length; i++) {
+//                            options += "<option value = '" + json[i].materialTypeId + "'>" + json[i].itemTypeDesc + " </option>";
+//
+//                        }
+//
+//                        
+//                    }
+//                });
+
+//                return false;
+//            }
         </script>
 
     </head>
@@ -256,27 +271,40 @@
                                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                                                     <strong>Success!</strong> Data is inserted
                                                 </div>
-                                                <table id="dataToJsonTable" class="table table-striped table-bordered table-hover">
-
-                                                </table>
-                                                <table class="table table-striped table-bordered table-hover" id="dataTables">
+                                                <table id="itemDescriptionTable" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th>Category</th>
-                                                            <th>Material</th>
+                                                            <th>Item Description</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <tr id="lstTR">
-                                                            <td><select id="cat"  onchange="getAllMaterialsByCat()">
-                                                                    <option>category</option>
-                                                                <c:forEach var="gener" items="${requestScope.geners}">
-                                                                    <option value="${gener.generId}">${gener.generCode}</option>
+
+                                                <c:forEach var="item" items="${requestScope.itemsWrappers}">
+                                                    <tr><td>${item.description}</td></tr>
+                                                </c:forEach>
+                                                <tbody>
+
+                                            </table>
+                                            <table class="table table-striped table-bordered table-hover" id="dataTables">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Category</th>
+                                                        <th>Material</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr id="lstTR">
+                                                        <td><select id="cat">
+                                                                <option>category</option>
+                                                                <c:forEach var="cat" items="${requestScope.cats}">
+                                                                    <option value="${cat.materailCategouryId}">${cat.materialCategouryDesc}</option>
                                                                 </c:forEach>
                                                             </select></td> 
 
-                                                        <td><select  id="materials" disabled="true">
+                                                        <td><select  id="materials">
                                                                 <option>materials</option>
+                                                                <c:forEach var="material" items="${requestScope.materials}">
+                                                                    <option value="${material.materialTypeId}">${material.itemTypeDesc}</option>
+                                                                </c:forEach>
                                                             </select></td> 
 
 
@@ -287,11 +315,8 @@
                                             </table>
                                             <input class="btn btn-primary" type="button" name="addBtn" value="add" onclick="add()"/> 
                                             <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> 
-                                            <input class="btn btn-success" type="submit" name="submit" value="save" onclick="save()"/>
-                                            <br/>
-                                            <br/>
+                                            <input class="btn btn-success" type="button" name="saveBtn" value="save" onclick="save()"/>
                                             <input class="btn btn-danger" type="button" name="editBtn" value="delete" onclick="deleteItem()"/> 
-                                            <input class="btn btn-warning" type="reset" name="reset" value="reset"/>
                                         </form>
                                     </div>
                                 </div>

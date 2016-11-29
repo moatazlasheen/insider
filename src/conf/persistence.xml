@@ -5,9 +5,9 @@
     <class>entity.MaterialCategourt</class>
     <class>entity.ItemDescription</class>
     <class>entity.Units</class>
-    <class>entity.MaterialType</class>
     <class>entity.Gener</class>
     <class>entity.ItemDescriptionType</class>
+    <class>entity.MaterialType</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://50.87.144.43:3306/insider3_dev?zeroDateTimeBehavior=convertToNull"/>

@@ -17,60 +17,43 @@ import entity.MaterialType;
  */
 public class ItemDescriptionTypeWrapper {
 
-    private ItemDescriptionType type;
-    private MaterialType material;
-    private Gener gener;
+    private Integer id;
+    private String description;
 
     public ItemDescriptionTypeWrapper() {
     }
 
-    public ItemDescriptionTypeWrapper(ItemDescriptionType type, MaterialType material, Gener gener) {
-        this.type = type;
-        this.material = material;
-        this.gener = gener;
-    }
-
-    
-    /**
-     * @return the type
-     */
-    public ItemDescriptionType getType() {
-        return type;
+    public ItemDescriptionTypeWrapper(Integer id, String description) {
+        this.id = id;
+        this.description = description;
     }
 
     /**
-     * @param type the type to set
+     * @return the id
      */
-    public void setType(ItemDescriptionType type) {
-        this.type = type;
+    public Integer getId() {
+        return id;
     }
 
     /**
-     * @return the material
+     * @param id the id to set
      */
-    public MaterialType getMaterial() {
-        return material;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     /**
-     * @param material the material to set
+     * @return the description
      */
-    public void setMaterial(MaterialType material) {
-        this.material = material;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * @return the gener
+     * @param description the description to set
      */
-    public Gener getGener() {
-        return gener;
-    }
-
-    /**
-     * @param gener the gener to set
-     */
-    public void setGener(Gener gener) {
-        this.gener = gener;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }
