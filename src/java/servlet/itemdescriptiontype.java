@@ -6,6 +6,9 @@
 package servlet;
 
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import dump.jpa.GenerJpaController;
+import dump.jpa.ItemDescriptionTypeJpaController;
+import dump.jpa.MaterialTypeJpaController;
 import entity.Gener;
 import entity.ItemDescriptionType;
 import entity.MaterialType;
@@ -22,9 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import dump.jpa.GenerJpaController;
-import dump.jpa.ItemDescriptionTypeJpaController;
-import dump.jpa.MaterialTypeJpaController;
 import model.cons;
 
 /**

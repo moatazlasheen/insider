@@ -1,13 +1,9 @@
 /*
-GPL * Copyright (C) 2016 mrnull <ahmadmoawad3@gmail.com>
-GPL *
-GPL * This program is free software; you can redistribute it and/or
-GPL * modify it under the terms of the GNU General Public License
-GPL * as published by the Free Software Foundation; either version 2
-GPL * of the License, or (at your option) any later version.
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
-
-package jpa;
+package dump.jpa;
 
 import entity.Units;
 import java.io.Serializable;
@@ -21,7 +17,8 @@ import javax.persistence.criteria.Root;
 import jpa.exceptions.NonexistentEntityException;
 
 /**
- * @author mrnull <ahmadmoawad3@gmail.com>
+ *
+ * @author ramy
  */
 public class UnitsJpaController implements Serializable {
 
@@ -137,5 +134,5 @@ public class UnitsJpaController implements Serializable {
             em.close();
         }
     }
-
+    
 }

@@ -21,6 +21,10 @@
         <link rel="stylesheet" href="assets/plugins/Font-Awesome/css/font-awesome.css" />
         <!--END GLOBAL STYLES -->
 
+        <!--                bootstrap select
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">-->
+
+
         <!-- PAGE LEVEL STYLES -->
         <link href="assets/css/layout2.css" rel="stylesheet" />
         <link href="assets/plugins/flot/examples/examples.css" rel="stylesheet" />
@@ -35,18 +39,19 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
         <script>
-//            $(document).ready(function () {
-//                $("#dataTables tbody").append(
-//                        " <tr>" +
-//                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-//                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-//                        "</tr>");
-//
-//            });
-
+            $(document).ready(function () {
+                $("#jsonNotifier").hide();
+            });
+            var elementsToJson = [];
 
             function add() {
-                $('#dataTables > tbody > tr:first').before('<tr><td>Stuff</td><td>Here</td></tr>');
+                var selectedCat = $("#cat option:selected");
+                var selectedMaterial = $("#materials option:selected");
+
+                $('#dataTables > tbody > tr:first').before('<tr><td>' + selectedCat.text() + '</td><td>' + selectedMaterial.text() + '</td></tr>');
+                elementsToJson.push([][selectedCat.val(), selectedMaterial.val()]);
+                alert(JSON.stringify(elementsToJson));
+
             }
 
             function edit() {
@@ -54,13 +59,12 @@
 
             }
             function save() {
-
-
-
+                $("#jsonNotifier").show();
             }
 
 
             function getAllMaterialsByCat() {
+                $("#materials").empty().append("<option>materials</option>").prop("disabled", true);
                 var cat = $("#cat option:selected").val();
 
                 $.ajax({
@@ -69,11 +73,18 @@
                         catID: cat
                     },
                     success: function (data) {
-                        alert(data)
+                        var options = "";
+                        var json = JSON.parse(data);
+
+                        for (var i = 0; i < json.length; i++) {
+                            options += "<option value = '" + json[i].materialTypeId + "'>" + json[i].itemTypeDesc + " </option>";
+
+                        }
+
+                        $("#materials").append(options).prop("disabled", false);
                     }
                 });
 
-                $("#materials").removeAttr('disabled');
                 return false;
             }
         </script>
@@ -241,6 +252,13 @@
                                     <div class="panel-body">
                                         <div class="table-responsive">
                                             <form method="POST" action="#">
+                                                <div id="jsonNotifier" class="alert alert-success alert-dismissible">
+                                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                                    <strong>Success!</strong> Data is inserted
+                                                </div>
+                                                <table id="dataToJsonTable" class="table table-striped table-bordered table-hover">
+
+                                                </table>
                                                 <table class="table table-striped table-bordered table-hover" id="dataTables">
                                                     <thead>
                                                         <tr>
@@ -257,7 +275,7 @@
                                                                 </c:forEach>
                                                             </select></td> 
 
-                                                        <td><select id="materials" disabled>
+                                                        <td><select  id="materials" disabled="true">
                                                                 <option>materials</option>
                                                             </select></td> 
 
@@ -270,6 +288,8 @@
                                             <input class="btn btn-primary" type="button" name="addBtn" value="add" onclick="add()"/> 
                                             <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> 
                                             <input class="btn btn-success" type="submit" name="submit" value="save" onclick="save()"/>
+                                            <br/>
+                                            <br/>
                                             <input class="btn btn-danger" type="button" name="editBtn" value="delete" onclick="deleteItem()"/> 
                                             <input class="btn btn-warning" type="reset" name="reset" value="reset"/>
                                         </form>
@@ -293,6 +313,12 @@
             <%@include  file="footer.jsp"%>        
         </div>
         <!--END FOOTER -->
+
+
+        <!--         Latest compiled and minified JavaScript 
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+                 (Optional) Latest compiled and minified JavaScript translation files 
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/i18n/defaults-*.min.js"></script>-->
 
 
         <!-- GLOBAL SCRIPTS -->
