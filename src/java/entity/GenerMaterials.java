@@ -10,6 +10,7 @@ GPL * of the License, or (at your option) any later version.
 package entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -26,12 +27,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "GenerMaterials.findAll", query = "SELECT g FROM GenerMaterials g")
     , @NamedQuery(name = "GenerMaterials.findByGenerId", query = "SELECT g FROM GenerMaterials g WHERE g.generMaterialsPK.generId = :generId")
-    , @NamedQuery(name = "GenerMaterials.findByMaterialId", query = "SELECT g FROM GenerMaterials g WHERE g.generMaterialsPK.materialId = :materialId")})
+    , @NamedQuery(name = "GenerMaterials.findByMaterialId", query = "SELECT g FROM GenerMaterials g WHERE g.generMaterialsPK.materialId = :materialId")
+    , @NamedQuery(name = "GenerMaterials.findByDescription", query = "SELECT g FROM GenerMaterials g WHERE g.description = :description")})
 public class GenerMaterials implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected GenerMaterialsPK generMaterialsPK;
+    @Column(name = "description")
+    private String description;
 
     public GenerMaterials() {
     }
@@ -50,6 +54,14 @@ public class GenerMaterials implements Serializable {
 
     public void setGenerMaterialsPK(GenerMaterialsPK generMaterialsPK) {
         this.generMaterialsPK = generMaterialsPK;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

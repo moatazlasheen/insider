@@ -1,13 +1,16 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+GPL * Copyright (C) 2016 mrnull <ahmadmoawad3@gmail.com>
+GPL *
+GPL * This program is free software; you can redistribute it and/or
+GPL * modify it under the terms of the GNU General Public License
+GPL * as published by the Free Software Foundation; either version 2
+GPL * of the License, or (at your option) any later version.
  */
+
 package jpa;
 
 import entity.Gener;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,8 +21,7 @@ import javax.persistence.criteria.Root;
 import jpa.exceptions.NonexistentEntityException;
 
 /**
- *
- * @author ramy
+ * @author mrnull <ahmadmoawad3@gmail.com>
  */
 public class GenerJpaController implements Serializable {
 
@@ -118,17 +120,6 @@ public class GenerJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             return em.find(Gener.class, id);
-        } finally {
-            em.close();
-        }
-    }
-
-    public List<Gener> getAllGener() {
-        EntityManager em = getEntityManager();
-        try {
-            String materialQuery = "FROM Gener g";
-            Query q = em.createQuery(materialQuery);
-            return q.getResultList();
         } finally {
             em.close();
         }

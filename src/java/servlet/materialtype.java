@@ -17,7 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import jpa.MaterialTypeJpaController;
+import dump.jpa.MaterialTypeJpaController;
 import model.cons;
 
 /**

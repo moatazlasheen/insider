@@ -1,8 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+GPL * Copyright (C) 2016 mrnull <ahmadmoawad3@gmail.com>
+GPL *
+GPL * This program is free software; you can redistribute it and/or
+GPL * modify it under the terms of the GNU General Public License
+GPL * as published by the Free Software Foundation; either version 2
+GPL * of the License, or (at your option) any later version.
  */
+
 package jpa;
 
 import entity.ItemDescriptionType;
@@ -17,8 +21,7 @@ import javax.persistence.criteria.Root;
 import jpa.exceptions.NonexistentEntityException;
 
 /**
- *
- * @author ramy
+ * @author mrnull <ahmadmoawad3@gmail.com>
  */
 public class ItemDescriptionTypeJpaController implements Serializable {
 
@@ -130,18 +133,6 @@ public class ItemDescriptionTypeJpaController implements Serializable {
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
-        } finally {
-            em.close();
-        }
-    }
-
-    public List<ItemDescriptionType> getAllTypes() {
-
-        EntityManager em = getEntityManager();
-        try {
-            String materialQuery = "FROM ItemDescriptionType i";
-            Query q = em.createQuery(materialQuery);
-            return q.getResultList();
         } finally {
             em.close();
         }

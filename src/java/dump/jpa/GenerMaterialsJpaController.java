@@ -7,9 +7,10 @@ GPL * as published by the Free Software Foundation; either version 2
 GPL * of the License, or (at your option) any later version.
  */
 
-package jpa;
+package dump.jpa;
 
-import entity.Units;
+import entity.GenerMaterials;
+import entity.GenerMaterialsPK;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -19,13 +20,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import jpa.exceptions.NonexistentEntityException;
+import jpa.exceptions.PreexistingEntityException;
 
 /**
  * @author mrnull <ahmadmoawad3@gmail.com>
  */
-public class UnitsJpaController implements Serializable {
+public class GenerMaterialsJpaController implements Serializable {
 
-    public UnitsJpaController(EntityManagerFactory emf) {
+    public GenerMaterialsJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -34,13 +36,21 @@ public class UnitsJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Units units) {
+    public void create(GenerMaterials generMaterials) throws PreexistingEntityException, Exception {
+        if (generMaterials.getGenerMaterialsPK() == null) {
+            generMaterials.setGenerMaterialsPK(new GenerMaterialsPK());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(units);
+            em.persist(generMaterials);
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findGenerMaterials(generMaterials.getGenerMaterialsPK()) != null) {
+                throw new PreexistingEntityException("GenerMaterials " + generMaterials + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -48,19 +58,19 @@ public class UnitsJpaController implements Serializable {
         }
     }
 
-    public void edit(Units units) throws NonexistentEntityException, Exception {
+    public void edit(GenerMaterials generMaterials) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            units = em.merge(units);
+            generMaterials = em.merge(generMaterials);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = units.getUnitId();
-                if (findUnits(id) == null) {
-                    throw new NonexistentEntityException("The units with id " + id + " no longer exists.");
+                GenerMaterialsPK id = generMaterials.getGenerMaterialsPK();
+                if (findGenerMaterials(id) == null) {
+                    throw new NonexistentEntityException("The generMaterials with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -71,19 +81,19 @@ public class UnitsJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
+    public void destroy(GenerMaterialsPK id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Units units;
+            GenerMaterials generMaterials;
             try {
-                units = em.getReference(Units.class, id);
-                units.getUnitId();
+                generMaterials = em.getReference(GenerMaterials.class, id);
+                generMaterials.getGenerMaterialsPK();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The units with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The generMaterials with id " + id + " no longer exists.", enfe);
             }
-            em.remove(units);
+            em.remove(generMaterials);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -92,19 +102,19 @@ public class UnitsJpaController implements Serializable {
         }
     }
 
-    public List<Units> findUnitsEntities() {
-        return findUnitsEntities(true, -1, -1);
+    public List<GenerMaterials> findGenerMaterialsEntities() {
+        return findGenerMaterialsEntities(true, -1, -1);
     }
 
-    public List<Units> findUnitsEntities(int maxResults, int firstResult) {
-        return findUnitsEntities(false, maxResults, firstResult);
+    public List<GenerMaterials> findGenerMaterialsEntities(int maxResults, int firstResult) {
+        return findGenerMaterialsEntities(false, maxResults, firstResult);
     }
 
-    private List<Units> findUnitsEntities(boolean all, int maxResults, int firstResult) {
+    private List<GenerMaterials> findGenerMaterialsEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Units.class));
+            cq.select(cq.from(GenerMaterials.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -116,20 +126,20 @@ public class UnitsJpaController implements Serializable {
         }
     }
 
-    public Units findUnits(Integer id) {
+    public GenerMaterials findGenerMaterials(GenerMaterialsPK id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Units.class, id);
+            return em.find(GenerMaterials.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUnitsCount() {
+    public int getGenerMaterialsCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Units> rt = cq.from(Units.class);
+            Root<GenerMaterials> rt = cq.from(GenerMaterials.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

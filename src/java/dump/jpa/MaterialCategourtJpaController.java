@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package jpa;
+package dump.jpa;
 
 import entity.MaterialCategourt;
 import entity.MaterialType;
@@ -139,7 +139,7 @@ public class MaterialCategourtJpaController implements Serializable {
     public List<MaterialType> getAllMaterialsByCat(Integer catID) {
         EntityManager em = getEntityManager();
         try {
-            String sql = "FROM MaterialCategourt m.materailCategouryId=" + catID;
+            String sql = "FROM MaterialCategourt m WHERE m.materailCategouryId=" + catID;
             em.createQuery(sql);
             Query query = em.createQuery(sql);
             List<MaterialType> materialIDs = query.getResultList();
