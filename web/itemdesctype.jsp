@@ -67,8 +67,6 @@
                         elements: json
                     },
                     success: function (data) {
-                        alert(data);
-//                        $("#chk").attr(value, Query.parseJSON(data));
                         $("#addJsonNotifier").show().delay(3000).hide("slow");
                         location.reload();  
                     }
