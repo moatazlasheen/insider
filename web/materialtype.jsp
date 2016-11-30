@@ -357,9 +357,9 @@
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title" id="H1">Edit Material Type</h4>
                         </div>
-                        <form role="form" method="POST" action="materialtype">
+                        <form role="form" method="POST" action="materialtype" onsubmit="return checkMaterialExistance('editevalue')">
                         <div class="modal-body">
-                            <input autofocus=""  type="text" class="form-control" name="editevalue" placeholder="enter your Material Type"  id="editevalue" required />
+                            <input autofocus=""  type="text" list="existingMaterialTypes" class="form-control" name="editevalue" placeholder="enter your Material Type"  id="editevalue" required />
                             <input type="hidden" name="edit_material_id" id="edit_unit_id"  />
                         </div>
                         <div>
