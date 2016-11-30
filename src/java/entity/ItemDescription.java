@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -16,63 +11,62 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author ramy
+ * @author mrnull <ahmadmoawad3@gmail.com>
  */
 @Entity
-@Table(name = "item_description", schema = "", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"item_id"})})
+@Table(name = "item_description")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "ItemDescription.findAll", query = "SELECT i FROM ItemDescription i"),
-    @NamedQuery(name = "ItemDescription.findByItemId", query = "SELECT i FROM ItemDescription i WHERE i.itemId = :itemId"),
-    @NamedQuery(name = "ItemDescription.findByItemCode", query = "SELECT i FROM ItemDescription i WHERE i.itemCode = :itemCode"),
-    @NamedQuery(name = "ItemDescription.findByItemDesc", query = "SELECT i FROM ItemDescription i WHERE i.itemDesc = :itemDesc"),
-    @NamedQuery(name = "ItemDescription.findByItemTypeId", query = "SELECT i FROM ItemDescription i WHERE i.itemTypeId = :itemTypeId"),
-    @NamedQuery(name = "ItemDescription.findByUnitId", query = "SELECT i FROM ItemDescription i WHERE i.unitId = :unitId"),
-    @NamedQuery(name = "ItemDescription.findByUdf1", query = "SELECT i FROM ItemDescription i WHERE i.udf1 = :udf1"),
-    @NamedQuery(name = "ItemDescription.findByUdf2", query = "SELECT i FROM ItemDescription i WHERE i.udf2 = :udf2"),
-    @NamedQuery(name = "ItemDescription.findByUdf3", query = "SELECT i FROM ItemDescription i WHERE i.udf3 = :udf3"),
-    @NamedQuery(name = "ItemDescription.findByUdf4", query = "SELECT i FROM ItemDescription i WHERE i.udf4 = :udf4"),
-    @NamedQuery(name = "ItemDescription.findByUdf5", query = "SELECT i FROM ItemDescription i WHERE i.udf5 = :udf5"),
-    @NamedQuery(name = "ItemDescription.findByGenerId", query = "SELECT i FROM ItemDescription i WHERE i.generId = :generId")})
+    @NamedQuery(name = "ItemDescription.findAll", query = "SELECT i FROM ItemDescription i")
+    , @NamedQuery(name = "ItemDescription.findByItemId", query = "SELECT i FROM ItemDescription i WHERE i.itemId = :itemId")
+    , @NamedQuery(name = "ItemDescription.findByItemCode", query = "SELECT i FROM ItemDescription i WHERE i.itemCode = :itemCode")
+    , @NamedQuery(name = "ItemDescription.findByItemDesc", query = "SELECT i FROM ItemDescription i WHERE i.itemDesc = :itemDesc")
+    , @NamedQuery(name = "ItemDescription.findByItemTypeId", query = "SELECT i FROM ItemDescription i WHERE i.itemTypeId = :itemTypeId")
+    , @NamedQuery(name = "ItemDescription.findByUnitId", query = "SELECT i FROM ItemDescription i WHERE i.unitId = :unitId")
+    , @NamedQuery(name = "ItemDescription.findByUdf1", query = "SELECT i FROM ItemDescription i WHERE i.udf1 = :udf1")
+    , @NamedQuery(name = "ItemDescription.findByUdf2", query = "SELECT i FROM ItemDescription i WHERE i.udf2 = :udf2")
+    , @NamedQuery(name = "ItemDescription.findByUdf3", query = "SELECT i FROM ItemDescription i WHERE i.udf3 = :udf3")
+    , @NamedQuery(name = "ItemDescription.findByUdf4", query = "SELECT i FROM ItemDescription i WHERE i.udf4 = :udf4")
+    , @NamedQuery(name = "ItemDescription.findByUdf5", query = "SELECT i FROM ItemDescription i WHERE i.udf5 = :udf5")
+    , @NamedQuery(name = "ItemDescription.findByGenerId", query = "SELECT i FROM ItemDescription i WHERE i.generId = :generId")
+    , @NamedQuery(name = "ItemDescription.findByUploadFileName", query = "SELECT i FROM ItemDescription i WHERE i.uploadFileName = :uploadFileName")})
 public class ItemDescription implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "item_id", nullable = false)
+    @Column(name = "item_id")
     private Integer itemId;
     @Basic(optional = false)
-    @Column(name = "item_code", nullable = false)
+    @Column(name = "item_code")
     private int itemCode;
-    @Column(name = "item_desc", length = 150)
+    @Column(name = "item_desc")
     private String itemDesc;
     @Basic(optional = false)
-    @Column(name = "item_type_id", nullable = false)
+    @Column(name = "item_type_id")
     private int itemTypeId;
     @Basic(optional = false)
-    @Column(name = "unit_id", nullable = false)
+    @Column(name = "unit_id")
     private int unitId;
     @Lob
+    @Column(name = "upload")
     private byte[] upload;
-    @Column(name = "udf_1", length = 50)
+    @Column(name = "udf_1")
     private String udf1;
-    @Column(name = "udf_2", length = 50)
+    @Column(name = "udf_2")
     private String udf2;
-    @Column(name = "udf_3", length = 50)
+    @Column(name = "udf_3")
     private String udf3;
-    @Column(name = "udf_4", length = 50)
+    @Column(name = "udf_4")
     private String udf4;
-    @Column(name = "udf_5", length = 50)
+    @Column(name = "udf_5")
     private String udf5;
     @Basic(optional = false)
-    @Column(name = "gener_id", nullable = false)
+    @Column(name = "gener_id")
     private int generId;
     @Column(name = "upload_file_name")
     private String uploadFileName;
@@ -84,13 +78,12 @@ public class ItemDescription implements Serializable {
         this.itemId = itemId;
     }
 
-    public ItemDescription(Integer itemId, int itemCode, int itemTypeId, int unitId, int generId, String uploadFileName) {
+    public ItemDescription(Integer itemId, int itemCode, int itemTypeId, int unitId, int generId) {
         this.itemId = itemId;
         this.itemCode = itemCode;
         this.itemTypeId = itemTypeId;
         this.unitId = unitId;
         this.generId = generId;
-        this.uploadFileName = uploadFileName;
     }
 
     public Integer getItemId() {

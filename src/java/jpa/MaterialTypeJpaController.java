@@ -130,19 +130,6 @@ public class MaterialTypeJpaController implements Serializable {
         }
     }
 
-    public List<MaterialType> getAllMaterials() {
-
-        EntityManager em = getEntityManager();
-        try {
-            String materialQuery = "FROM MaterialType m";
-            Query q = em.createQuery(materialQuery);
-            return q.getResultList();
-        } finally {
-            em.close();
-        }
-
-    }
-
     public int getMaterialTypeCount() {
         EntityManager em = getEntityManager();
         try {
@@ -170,6 +157,20 @@ public class MaterialTypeJpaController implements Serializable {
             }
         }
         return exists;
+    }
+
+    public List<MaterialType> getAllMaterials() {
+        EntityManager em = getEntityManager();
+        try {
+            String sql = "FROM MaterialType m";
+            em.createQuery(sql);
+            Query query = em.createQuery(sql);
+            return query.getResultList();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
     }
 
 }

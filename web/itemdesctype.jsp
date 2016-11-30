@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
@@ -21,6 +21,10 @@
         <link rel="stylesheet" href="assets/plugins/Font-Awesome/css/font-awesome.css" />
         <!--END GLOBAL STYLES -->
 
+        <!--                bootstrap select
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">-->
+
+
         <!-- PAGE LEVEL STYLES -->
         <link href="assets/css/layout2.css" rel="stylesheet" />
         <link href="assets/plugins/flot/examples/examples.css" rel="stylesheet" />
@@ -35,18 +39,16 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
         <script>
-//            $(document).ready(function () {
-//                $("#dataTables tbody").append(
-//                        " <tr>" +
-//                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-//                        "<td> <input type = \"text\" name = \"typeCode[]\"  class = \"form-control\" /> </td> " +
-//                        "</tr>");
-//
-//            });
 
-
+            var elementsToJson = [];
+            $(document).ready(function () {
+                $("#jsonNotifier").hide();
+            });
             function add() {
-                $('#dataTables > tbody > tr.odd').before('<tr><td>here</td><td>here</td></tr>');
+                var selectedCat = $("#cat option:selected");
+                var selectedMaterial = $("#materials option:selected");
+                $('#dataTables > tbody > tr:first').before('<tr><td>' + selectedCat.text() + '</td><td>' + selectedMaterial.text() + '</td></tr>');
+                elementsToJson.push([selectedCat.val(), selectedMaterial.val()]);
             }
 
             function edit() {
@@ -55,17 +57,60 @@
             }
             function save() {
 
-
-
-            }
-
-
-            function getAllMaterialsByCat() {
-                var cat = $("#cat option:selected").val();
-//                /materialajax
-                $("#materials").removeAttr('disabled');
+                var json = JSON.stringify(elementsToJson);
+                $.ajax({
+                    url: 'itemdescriptionajax',
+                    data: {
+                        elements: json
+                    },
+                    success: function (data) {
+                        alert(data);
+                        $("#jsonNotifier").show();
+                    }
+                });
                 return false;
             }
+            function deleteItem() {
+                var selected = [];
+                $('.items:checkbox:checked').each(function () {
+                    selected.push($(this).val());
+                    alert($(this).val());
+                });
+                $.post('itemdescriptionajax',
+                        {
+                            elements: selected
+                        }, function (data) {
+                    alert(data);
+
+                }
+                );
+                return false;
+            }
+
+//            function getAllMaterialsByCat() {
+//                $("#materials").empty().append("<option>materials</option>").prop("disabled", true);
+//                var cat = $("#cat option:selected").val();
+//
+//                $.ajax({
+//                    url: 'materialajax',
+//                    data: {
+//                        catID: cat
+//                    },
+//                    success: function (data) {
+//                        var options = "";
+//                        var json = JSON.parse(data);
+//
+//                        for (var i = 0; i < json.length; i++) {
+//                            options += "<option value = '" + json[i].materialTypeId + "'>" + json[i].itemTypeDesc + " </option>";
+//
+//                        }
+//
+//                        
+//                    }
+//                });
+
+//                return false;
+//            }
         </script>
 
     </head>
@@ -231,24 +276,49 @@
                                     <div class="panel-body">
                                         <div class="table-responsive">
                                             <form method="POST" action="#">
-                                                <table class="table table-striped table-bordered table-hover" id="dataTables">
+                                                <div id="jsonNotifier" class="alert alert-success alert-dismissible">
+                                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                                    <strong>Success!</strong> Data is inserted
+                                                </div>
+
+                                                <table id="itemDescriptionTable" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th>Category</th>
-                                                            <th>Material</th>
+                                                            <th>Select</th>
+                                                            <th>Item</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <tr id="lstTR">
-                                                            <td><select id="cat"  onchange="getAllMaterialsByCat()">
-                                                                    <option>category</option>
-                                                                <c:forEach var="gener" items="${requestScope.geners}">
-                                                                    <option value="${gener.generId}">${gener.generCode}</option>
+
+                                                <c:forEach var="item" items="${requestScope.itemsWrappers}">
+                                                    <tr>
+                                                        <td><input type="checkbox" value="${item.id}" class="items"></td>
+                                                        <td>${item.description}</td></tr>
+                                                    </c:forEach>
+                                                <tbody>
+
+                                            </table>
+
+                                            <table class="table table-striped table-bordered table-hover" id="dataTables">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Category</th>
+                                                        <th>Material</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr id="lstTR">
+                                                        <td><select id="cat">
+                                                                <option>category</option>
+                                                                <c:forEach var="cat" items="${requestScope.cats}">
+                                                                    <option value="${cat.materailCategouryId}">${cat.materialCategouryDesc}</option>
                                                                 </c:forEach>
                                                             </select></td> 
 
-                                                        <td><select id="materials" disabled>
+                                                        <td><select  id="materials">
                                                                 <option>materials</option>
+                                                                <c:forEach var="material" items="${requestScope.materials}">
+                                                                    <option value="${material.materialTypeId}">${material.itemTypeDesc}</option>
+                                                                </c:forEach>
                                                             </select></td> 
 
 
@@ -258,10 +328,9 @@
 
                                             </table>
                                             <input class="btn btn-primary" type="button" name="addBtn" value="add" onclick="add()"/> 
-                                            <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> 
-                                            <input class="btn btn-success" type="submit" name="submit" value="save" onclick="save()"/>
+                                            <!--                                            <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> -->
+                                            <input class="btn btn-success" type="button" name="saveBtn" value="save" onclick="save()"/>
                                             <input class="btn btn-danger" type="button" name="editBtn" value="delete" onclick="deleteItem()"/> 
-                                            <input class="btn btn-warning" type="reset" name="reset" value="reset"/>
                                         </form>
                                     </div>
                                 </div>
@@ -283,6 +352,12 @@
             <%@include  file="footer.jsp"%>        
         </div>
         <!--END FOOTER -->
+
+
+        <!--         Latest compiled and minified JavaScript 
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+                 (Optional) Latest compiled and minified JavaScript translation files 
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/i18n/defaults-*.min.js"></script>-->
 
 
         <!-- GLOBAL SCRIPTS -->

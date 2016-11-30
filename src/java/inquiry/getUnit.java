@@ -8,7 +8,6 @@ package inquiry;
 import entity.Gener;
 import entity.ItemDescription;
 import entity.ItemDescriptionType;
-import entity.MaterialCategourt;
 import entity.MaterialType;
 import entity.Units;
 import java.util.List;
@@ -17,7 +16,6 @@ import javax.persistence.Persistence;
 import jpa.GenerJpaController;
 import jpa.ItemDescriptionJpaController;
 import jpa.ItemDescriptionTypeJpaController;
-import jpa.MaterialCategourtJpaController;
 import jpa.MaterialTypeJpaController;
 import jpa.UnitsJpaController;
 import model.cons;
@@ -40,13 +38,6 @@ public class getUnit {
         GenerJpaController controller = new GenerJpaController(emf);
         List<Gener> findGenerEntities = controller.findGenerEntities();
         return findGenerEntities;
-    }
-
-    public List<MaterialCategourt> getMaterialCat() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(cons.entityName);
-        MaterialCategourtJpaController controller = new MaterialCategourtJpaController(emf);
-        List<MaterialCategourt> findUnitsEntities = controller.findMaterialCategourtEntities();
-        return findUnitsEntities;
     }
 
     public List<MaterialType> getmaterialType() {

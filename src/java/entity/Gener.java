@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -15,33 +10,30 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author ramy
+ * @author mrnull <ahmadmoawad3@gmail.com>
  */
 @Entity
-@Table(schema = "", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"gener_id"})})
+@Table(name = "GENER")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Gener.findAll", query = "SELECT g FROM Gener g"),
-    @NamedQuery(name = "Gener.findByGenerId", query = "SELECT g FROM Gener g WHERE g.generId = :generId"),
-    @NamedQuery(name = "Gener.findByGenerCode", query = "SELECT g FROM Gener g WHERE g.generCode = :generCode"),
-    @NamedQuery(name = "Gener.findByGenerDesc", query = "SELECT g FROM Gener g WHERE g.generDesc = :generDesc")})
+    @NamedQuery(name = "Gener.findAll", query = "SELECT g FROM Gener g")
+    , @NamedQuery(name = "Gener.findByGenerId", query = "SELECT g FROM Gener g WHERE g.generId = :generId")
+    , @NamedQuery(name = "Gener.findByGenerCode", query = "SELECT g FROM Gener g WHERE g.generCode = :generCode")
+    , @NamedQuery(name = "Gener.findByGenerDesc", query = "SELECT g FROM Gener g WHERE g.generDesc = :generDesc")})
 public class Gener implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "gener_id", nullable = false)
+    @Column(name = "gener_id")
     private Integer generId;
-    @Column(name = "gener_code", length = 20)
+    @Column(name = "gener_code")
     private String generCode;
-    @Column(name = "gener_desc", length = 150)
+    @Column(name = "gener_desc")
     private String generDesc;
 
     public Gener() {
@@ -99,5 +91,5 @@ public class Gener implements Serializable {
     public String toString() {
         return "entity.Gener[ generId=" + generId + " ]";
     }
-    
+
 }

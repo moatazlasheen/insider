@@ -6,8 +6,13 @@
 package servlet;
 
 import com.sun.javafx.scene.control.skin.VirtualFlow;
+import dto.ItemDescriptionTypeWrapper;
+import jpa.GenerJpaController;
+import jpa.ItemDescriptionTypeJpaController;
+import jpa.MaterialTypeJpaController;
 import entity.Gener;
 import entity.ItemDescriptionType;
+import entity.MaterialCategourt;
 import entity.MaterialType;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,9 +27,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import jpa.GenerJpaController;
-import jpa.ItemDescriptionTypeJpaController;
-import jpa.MaterialTypeJpaController;
+import jpa.MaterialCategourtJpaController;
 import model.cons;
 
 /**
@@ -103,6 +106,8 @@ public class itemdescriptiontype extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         showDropDownLists(request, response);
+        showAllDataTable(request, response);
+        request.getRequestDispatcher("itemdesctype.jsp").forward(request, response);
     }
 
     /**
@@ -135,16 +140,35 @@ public class itemdescriptiontype extends HttpServlet {
         try {
             emf = Persistence.createEntityManagerFactory(cons.entityName);
             em = emf.createEntityManager();
-            List<ItemDescriptionType> types = new ItemDescriptionTypeJpaController(emf).getAllTypes();
-            
-            MaterialTypeJpaController materialController = new MaterialTypeJpaController(emf);
-            List<MaterialType> materials = materialController.getAllMaterials();
-            GenerJpaController generContoller = new GenerJpaController(emf);
-            List<Gener> geners = generContoller.getAllGener();
+            MaterialCategourtJpaController materialController = new MaterialCategourtJpaController(emf);
+            List<MaterialCategourt> cats = materialController.getAllMaterials();
+            List<MaterialType> materials = new MaterialTypeJpaController(emf).getAllMaterials();
+            request.setAttribute("cats", cats);
             request.setAttribute("materials", materials);
-            request.setAttribute("geners", geners);
 
-            request.getRequestDispatcher("itemdesctype.jsp").forward(request, response);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            if (emf != null) {
+                emf.close();
+            }
+
+        }
+    }
+
+    private void showAllDataTable(HttpServletRequest request, HttpServletResponse response) {
+        EntityManager em = null;
+        EntityManagerFactory emf = null;
+        try {
+            emf = Persistence.createEntityManagerFactory(cons.entityName);
+            em = emf.createEntityManager();
+            ItemDescriptionTypeJpaController itemCtl = new ItemDescriptionTypeJpaController(emf);
+            List<ItemDescriptionTypeWrapper> itemWrappers = itemCtl.getAllData();
+            request.setAttribute("itemsWrappers", itemWrappers);
+
         } catch (Exception e) {
             System.err.println(e.getMessage());
         } finally {

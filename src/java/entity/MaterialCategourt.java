@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -18,25 +13,24 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author ramy
+ * @author mrnull <ahmadmoawad3@gmail.com>
  */
 @Entity
-@Table(name = "material_categourt", schema = "")
+@Table(name = "material_categourt")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "MaterialCategourt.findAll", query = "SELECT m FROM MaterialCategourt m"),
-    @NamedQuery(name = "MaterialCategourt.findByMaterailCategouryId", query = "SELECT m FROM MaterialCategourt m WHERE m.materailCategouryId = :materailCategouryId"),
-    @NamedQuery(name = "MaterialCategourt.findByMaterialCategouryDesc", query = "SELECT m FROM MaterialCategourt m WHERE m.materialCategouryDesc = :materialCategouryDesc")})
+    @NamedQuery(name = "MaterialCategourt.findAll", query = "SELECT m FROM MaterialCategourt m")
+    , @NamedQuery(name = "MaterialCategourt.findByMaterailCategouryId", query = "SELECT m FROM MaterialCategourt m WHERE m.materailCategouryId = :materailCategouryId")
+    , @NamedQuery(name = "MaterialCategourt.findByMaterialCategouryDesc", query = "SELECT m FROM MaterialCategourt m WHERE m.materialCategouryDesc = :materialCategouryDesc")})
 public class MaterialCategourt implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "materail_categoury_id", nullable = false)
+    @Column(name = "materail_categoury_id")
     private Integer materailCategouryId;
-    @Column(name = "material_Categoury_Desc", length = 150)
+    @Column(name = "material_Categoury_Desc")
     private String materialCategouryDesc;
 
     public MaterialCategourt() {
@@ -86,5 +80,5 @@ public class MaterialCategourt implements Serializable {
     public String toString() {
         return "entity.MaterialCategourt[ materailCategouryId=" + materailCategouryId + " ]";
     }
-    
+
 }

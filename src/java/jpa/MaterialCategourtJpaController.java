@@ -139,17 +139,33 @@ public class MaterialCategourtJpaController implements Serializable {
     public List<MaterialType> getAllMaterialsByCat(Integer catID) {
         EntityManager em = getEntityManager();
         try {
-            String sql = "FROM MaterialCategourt m";
+            String sql = "SELECT i.materialTypeId FROM ItemDescriptionType i WHERE i.materialCategoryId=" + catID;
             em.createQuery(sql);
             Query query = em.createQuery(sql);
-            List materialIDs = query.getResultList();
-            sql = "FROM MaterialType m WHERE m.materialTypeId in(" + materialIDs
-                    + ")";
+            List<Integer> materialIDs = query.getResultList();
+
+            sql = "FROM MaterialType m WHERE m.materialTypeId IN (:list)";
             query = em.createQuery(sql);
+            query.setParameter("list", materialIDs);
             return query.getResultList();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
+    public List<MaterialCategourt> getAllMaterials() {
+
+        EntityManager em = getEntityManager();
+        try {
+            String materialQuery = "FROM MaterialCategourt m";
+            Query q = em.createQuery(materialQuery);
+            return q.getResultList();
         } finally {
             em.close();
         }
+
     }
 
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entity;
 
 import java.io.Serializable;
@@ -15,30 +10,27 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author ramy
+ * @author mrnull <ahmadmoawad3@gmail.com>
  */
 @Entity
-@Table( schema = "", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"unit_id"})})
+@Table(name = "UNITS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Units.findAll", query = "SELECT u FROM Units u"),
-    @NamedQuery(name = "Units.findByUnitId", query = "SELECT u FROM Units u WHERE u.unitId = :unitId"),
-    @NamedQuery(name = "Units.findByUnitDesc", query = "SELECT u FROM Units u WHERE u.unitDesc = :unitDesc")})
+    @NamedQuery(name = "Units.findAll", query = "SELECT u FROM Units u")
+    , @NamedQuery(name = "Units.findByUnitId", query = "SELECT u FROM Units u WHERE u.unitId = :unitId")
+    , @NamedQuery(name = "Units.findByUnitDesc", query = "SELECT u FROM Units u WHERE u.unitDesc = :unitDesc")})
 public class Units implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "unit_id", nullable = false)
+    @Column(name = "unit_id")
     private Integer unitId;
-    @Column(name = "unit_desc", length = 100)
+    @Column(name = "unit_desc")
     private String unitDesc;
 
     public Units() {
@@ -88,5 +80,5 @@ public class Units implements Serializable {
     public String toString() {
         return "entity.Units[ unitId=" + unitId + " ]";
     }
-    
+
 }
