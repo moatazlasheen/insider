@@ -395,7 +395,19 @@
                             <form role="form" action="materialtype" method="POST" onsubmit="return checkMaterialExistance('material_desc')">
                                 <div class="form-group">
                                     <label>Material Type</label>
-                                    <input clas="form-control" type="text" name="material_desc" placeholder="enter Material Type" required=""/>
+                                    <input clas="form-control" type="text" name="material_desc" list="existingMaterialTypes" placeholder="enter Material Type" required=""/>
+                                   <datalist id="existingMaterialTypes">
+                                        <%
+                                                for (int i = 0; i < rr.size(); i++) {
+                                        %>
+
+                                        <option><%=rr.get(i).getItemTypeDesc() %></option>                                                
+
+                                        <%
+                                                }
+                                        %>
+                                    </datalist>
+                                        
                                 </div>
                                 <div class="form-group">
                                     <label>Material Type Category</label>
