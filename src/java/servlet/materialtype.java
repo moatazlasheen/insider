@@ -50,6 +50,10 @@ public class materialtype extends HttpServlet {
                 em.getTransaction().begin();
                 MaterialType mt=new MaterialType();
                 mt.setItemTypeDesc(request.getParameter("material_desc").trim());
+                String materialTypeCategory = request.getParameter("materialTypeCat2");
+                if (materialTypeCategory!=null) {
+                    mt.setMaterialCategory((MaterialCategourt) em.createQuery("SELECT m FROM MaterialCategourt m WHERE m.materialCategouryDesc = :materialCategouryDesc").setParameter("materialCategouryDesc", materialTypeCategory.trim()).getSingleResult());
+                }
                 controller.create(mt);
                 em.getTransaction().commit();
                 response.sendRedirect("materialtype.jsp");
