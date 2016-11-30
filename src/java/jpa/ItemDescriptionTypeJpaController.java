@@ -140,8 +140,9 @@ public class ItemDescriptionTypeJpaController implements Serializable {
 
     public List<ItemDescriptionType> getAllTypes() {
 
-        EntityManager em = getEntityManager();
+        EntityManager em = null;
         try {
+            em = getEntityManager();
             String materialQuery = "FROM ItemDescriptionType i";
             Query q = em.createQuery(materialQuery);
             return q.getResultList();
@@ -150,46 +151,73 @@ public class ItemDescriptionTypeJpaController implements Serializable {
         }
     }
 
-    public boolean saveItems(int[][] elements) {
-        EntityManager em = getEntityManager();
-        em.getTransaction().begin();
+    public int saveItems(int[][] elements) {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
 
-        if (elements.length <= 0) {
-            return false;
+            em.getTransaction().begin();
+
+            if (elements.length <= 0) {
+                return -1;
+            }
+
+            for (int i = 0; i < elements.length; i++) {
+                System.out.println("trace ids:" + elements[i][0]);
+                em.persist(new ItemDescriptionType(elements[i][0], elements[i][1]));
+
+            }
+
+            String sql = "SELECT MAX(i.itemTypeId) FROM ItemDescriptionType i";
+            int index = (Integer) em.createQuery(sql).getSingleResult();
+            em.getTransaction().commit();
+            return index;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
         }
-
-        for (int i = 0; i < elements.length; i++) {
-            System.out.println("trace ids:" + elements[i][0]);
-            em.persist(new ItemDescriptionType(elements[i][0], elements[i][1]));
-        }
-
-        em.getTransaction().commit();
-        return true;
     }
 
     public List<ItemDescriptionTypeWrapper> getAllData() {
-        EntityManager em = getEntityManager();
-        String sql = "SELECT i.itemTypeId, m.materialCategouryDesc, mt.itemTypeDesc FROM ItemDescriptionType i, MaterialCategourt  m, MaterialType mt "
-                + "WHERE i.materialCategoryId=m.materailCategouryId AND i.materialTypeId=mt.materialTypeId";
-        Query query = em.createQuery(sql);
-        List result = query.getResultList();
-        List<ItemDescriptionTypeWrapper> itemWrappers = new ArrayList<ItemDescriptionTypeWrapper>();
-        for (int i = 0; i < result.size(); i++) {
-            Object[] obj = (Object[]) result.get(i);
-            itemWrappers.add(new ItemDescriptionTypeWrapper(Integer.parseInt(obj[0].toString()), obj[1].toString() + " - " + obj[2].toString()));
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            String sql = "SELECT i.itemTypeId, m.materialCategouryDesc, mt.itemTypeDesc FROM ItemDescriptionType i, MaterialCategourt  m, MaterialType mt "
+                    + "WHERE i.materialCategoryId=m.materailCategouryId AND i.materialTypeId=mt.materialTypeId";
+            Query query = em.createQuery(sql);
+            List result = query.getResultList();
+            List<ItemDescriptionTypeWrapper> itemWrappers = new ArrayList<ItemDescriptionTypeWrapper>();
+            for (int i = 0; i < result.size(); i++) {
+                Object[] obj = (Object[]) result.get(i);
+                itemWrappers.add(new ItemDescriptionTypeWrapper(Integer.parseInt(obj[0].toString()), obj[1].toString() + " - " + obj[2].toString()));
+            }
+            return itemWrappers;
+        } finally {
+
+            if (em != null) {
+                em.close();
+            }
         }
-        return itemWrappers;
     }
 
-    public void deleteItems(int[][] elements) {
-        EntityManager em = getEntityManager();
-        em.getTransaction().begin();
-        String sql = "DELETE FROM ItemDescriptionType i WHERE i.itemTypeId IN (:list) ";
-        Query query = em.createQuery(sql);
-        query.setParameter("list", Arrays.asList(elements));
-        query.executeUpdate();
-        em.getTransaction().commit();
-
+    public void deleteItems(Integer[] elements) {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            String sql = "";
+            em.getTransaction().begin();
+            for (int i = 0; i < elements.length; i++) {
+                sql = "DELETE FROM ItemDescriptionType  WHERE itemTypeId=" + elements[i];
+                Query query = em.createQuery(sql);
+                query.executeUpdate();
+            }
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
     }
 
 }
