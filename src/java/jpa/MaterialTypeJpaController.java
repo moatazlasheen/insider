@@ -169,7 +169,6 @@ public class MaterialTypeJpaController implements Serializable {
                 em.close();
             }
         }
-
         return exists;
     }
 
