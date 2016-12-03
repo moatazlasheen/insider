@@ -438,9 +438,9 @@
 
                                 <table class="table table-striped table-bordered table-hover">
                                     <tr align="center">
-                                        <td align="center"><input type="text" name="code"  class="form-control" /></td>
+                                        <td align="center"><input type="text" name="code"  class="form-control" placeholder="Code"/></td>
                                         <td align="center">
-                                            <input list="description" name="description" type="text" required="true">
+                                            <input list="description" name="description" type="text" placeholder="Description" required="true">
                                             <datalist id="description">
                                                 <%
                                                     for (ItemDescription item : items) {
@@ -454,7 +454,7 @@
                                         </td>
                                         <td align="center">
                                             <!--<input type="text" name="item_type"  class="form-control" required="true"/>-->
-                                            <input list="item_type" name="item_type" type="text" required="true" class="col-sm-2">
+                                            <input list="item_type" name="item_type" type="text" placeholder="Item type" required="true" class="col-sm-2">
                                             <datalist id="item_type">
                                                 <%
                                                     //                                                       ItemDescription item = items.get(0);
@@ -466,7 +466,7 @@
                                         </td>
                                         <td align="center">
                                             <!--                                                        <input type="text" name="unit_id"  class="form-control" required="true"/>-->
-                                            <input list="units_list" name="unit_id" type="text" required="true">
+                                            <input list="units_list" name="unit_id" type="text" placeholder="Unit" required="true">
 
                                             <datalist id="units_list">
                                                 <%
