@@ -42,13 +42,15 @@
 
             var elementsToJson = [];
             $(document).ready(function () {
-                $("#jsonNotifier").hide();
+                $("#addJsonNotifier").hide();
+                $("#deleteJsonNotifier").hide();
             });
             function add() {
                 var selectedCat = $("#cat option:selected");
                 var selectedMaterial = $("#materials option:selected");
-                $('#dataTables > tbody > tr:first').before('<tr><td>' + selectedCat.text() + '</td><td>' + selectedMaterial.text() + '</td></tr>');
+                $('#itemDescriptionTable > tbody > tr:first').before('<tr id="' + (selectedCat.val() + selectedMaterial.val()) + '"><td><input type="checkbox" id="chk" value="${item.id}" class="items"></td><td>' + selectedCat.text() + " - " + selectedMaterial.text() + '</td></tr>');
                 elementsToJson.push([selectedCat.val(), selectedMaterial.val()]);
+                $("#saveBtn").prop("disabled", false);
             }
 
             function edit() {
@@ -60,12 +62,13 @@
                 var json = JSON.stringify(elementsToJson);
                 $.ajax({
                     url: 'itemdescriptionajax',
+                    type: "GET",
                     data: {
                         elements: json
                     },
                     success: function (data) {
-                        alert(data);
-                        $("#jsonNotifier").show();
+                        $("#addJsonNotifier").show().delay(3000).hide("slow");
+                        location.reload();  
                     }
                 });
                 return false;
@@ -74,14 +77,18 @@
                 var selected = [];
                 $('.items:checkbox:checked').each(function () {
                     selected.push($(this).val());
-                    alert($(this).val());
                 });
+
                 $.post('itemdescriptionajax',
                         {
-                            elements: selected
+                            elements: JSON.stringify(selected)
                         }, function (data) {
-                    alert(data);
+                    $("#deleteJsonNotifier").show().delay(3000).hide("slow");
+                    for (var i = 0; i < selected.length; i++) {
 
+                        $("#" + selected[i] + "").remove();
+
+                    }
                 }
                 );
                 return false;
@@ -276,11 +283,14 @@
                                     <div class="panel-body">
                                         <div class="table-responsive">
                                             <form method="POST" action="#">
-                                                <div id="jsonNotifier" class="alert alert-success alert-dismissible">
+                                                <div id="addJsonNotifier" class="alert alert-success alert-dismissible">
                                                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                                    <strong>Success!</strong> Data is inserted
+                                                    <strong>Success!</strong> Data has been inserted
                                                 </div>
 
+                                                <div id="deleteJsonNotifier" class="alert alert-danger">
+                                                    <strong>Danger!</strong> Data has been removed
+                                                </div>
                                                 <table id="itemDescriptionTable" class="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
@@ -290,7 +300,7 @@
                                                     </thead>
 
                                                 <c:forEach var="item" items="${requestScope.itemsWrappers}">
-                                                    <tr>
+                                                    <tr id="${item.id}">
                                                         <td><input type="checkbox" value="${item.id}" class="items"></td>
                                                         <td>${item.description}</td></tr>
                                                     </c:forEach>
@@ -329,7 +339,7 @@
                                             </table>
                                             <input class="btn btn-primary" type="button" name="addBtn" value="add" onclick="add()"/> 
                                             <!--                                            <input class="btn btn-info" type="button" name="editBtn" value="edit" onclick="edit()"/> -->
-                                            <input class="btn btn-success" type="button" name="saveBtn" value="save" onclick="save()"/>
+                                            <input class="btn btn-success" type="button" id="saveBtn" value="save" onclick="save()" disabled="true"/>
                                             <input class="btn btn-danger" type="button" name="editBtn" value="delete" onclick="deleteItem()"/> 
                                         </form>
                                     </div>

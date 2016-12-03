@@ -1,11 +1,3 @@
-/*
- * Copyright (C) 2016 mrnull <ahmadmoawad3@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- */
 package servlet;
 
 import com.google.gson.Gson;
@@ -49,7 +41,7 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
             throws ServletException, IOException {
         saveData(request, response);
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         deleteItems(req, resp);
@@ -72,19 +64,19 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
         try {
             emf = Persistence.createEntityManagerFactory(cons.entityName);
             em = emf.createEntityManager();
-
+            
             String param = request.getParameter("elements");
-
+            
             if (param == null) {
-
+                
                 response.getWriter().write("none");
-
+                
                 return;
             }
             int[][] elements = gson.fromJson(param, int[][].class);
             ItemDescriptionTypeJpaController itemCtl = new ItemDescriptionTypeJpaController(emf);
-            itemCtl.saveItems(elements);
-            response.getWriter().write("done");
+            int index = itemCtl.saveItems(elements);
+            response.getWriter().write(gson.toJson(index));
         } catch (IOException ex) {
             Logger.getLogger(ItemDescriptionTypeServletAjax.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -94,11 +86,11 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
             if (emf != null) {
                 emf.close();
             }
-
+            
         }
-
+        
     }
-
+    
     private void deleteItems(HttpServletRequest request, HttpServletResponse response) {
         Gson gson = new Gson();
         EntityManagerFactory emf = null;
@@ -106,16 +98,14 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
         try {
             emf = Persistence.createEntityManagerFactory(cons.entityName);
             em = emf.createEntityManager();
-
+            
             String param = request.getParameter("elements");
-
+            
             if (param == null) {
-
                 response.getWriter().write("none");
-
                 return;
             }
-            int[][] elements = gson.fromJson(param, int[][].class);
+            Integer[] elements = gson.fromJson(param, Integer[].class);
             ItemDescriptionTypeJpaController itemCtl = new ItemDescriptionTypeJpaController(emf);
             itemCtl.deleteItems(elements);
             response.getWriter().write("done");
@@ -128,8 +118,8 @@ public class ItemDescriptionTypeServletAjax extends HttpServlet {
             if (emf != null) {
                 emf.close();
             }
-
+            
         }
     }
-
+    
 }

@@ -26,10 +26,13 @@
                     <file>${file.reference.commons-io-2.4.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+<<<<<<< HEAD
+=======
                 <library dirs="200">
                     <file>${file.reference.gson-2.2.2.jar}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
+>>>>>>> 05aa94d303c64f1e5aee3a2b74d48f52e6a82de4
             </web-module-libraries>
             <web-module-additional-libraries/>
             <source-roots>
