@@ -421,6 +421,7 @@
                                     </select>
                                 </div>
                                 <div class="modal-footer">
+                                    <button type="reset" name="resetBtn" value="Reset" class="btn btn-primary">Reset</button>
                                     <button type="submit" name="save" value="save" class="btn btn-primary">Save changes</button>
                                 </div>
                             </form>
